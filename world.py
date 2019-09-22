@@ -39,6 +39,8 @@ class Trap:
 
 
 class Room:
+    level: "Level"
+
     terrain: Terrain = Terrain.EMPTY
     neighbors: Dict[Direction, "Room"]
 
@@ -50,8 +52,9 @@ class Room:
 
     seen: bool = False
 
-    def __init__(self) -> None:
+    def __init__(self, level: "Level") -> None:
         self.neighbors = {}
+        self.level = level
 
     @property
     def allows_sight(self) -> bool:
@@ -71,7 +74,10 @@ class Level:
     entrance: Room
 
     def __init__(self) -> None:
-        self.entrance = Room()
+        r1, r2, r3 = [Room(self) for _ in "123"]
+        self.entrance = r1
+        r1.neighbors[Direction.EAST] = r2
+        r2.neighbors[Direction.SOUTH] = r3
 
 
 class World:
