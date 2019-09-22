@@ -23,7 +23,7 @@ class Game:
     time: int = 0
     MAX_TIME: int = 100
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.world = World()
         self.hero = hero.Hero(self.world)
 

@@ -13,7 +13,7 @@ class Stat:
         """Bonus to dice rolls when using this ability"""
         return (self.score - self.damage) // 2
 
-    def heal(self):
+    def heal(self) -> None:
         self.damage = 0
 
 
@@ -47,7 +47,7 @@ class Hero:
         return (self.strength, self.agility, self.health, self.awareness, self.power)
 
     @property
-    def hit_points(self):
+    def hit_points(self) -> int:
         hp = self.max_hit_points - self.damage
         return max(hp, 0)
 

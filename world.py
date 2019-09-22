@@ -27,14 +27,14 @@ class Door:
     kind: DoorKind
     hide_dc: int = 0  # Difficulty of finding if hidden. 0 if found or not hidden
 
-    def reveal(self):
+    def reveal(self) -> None:
         self.hide_dc = 0
 
 
 class Trap:
     hide_dc: int = 0  # Difficulty of finding if hidden. 0 if found or not hidden
 
-    def reveal(self):
+    def reveal(self) -> None:
         self.hide_dc = 0
 
 
@@ -50,7 +50,7 @@ class Room:
 
     seen: bool = False
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.neighbors = {}
 
     @property
@@ -63,19 +63,19 @@ class Room:
         elif self.trap and 0 < self.trap.hide_dc <= check:
             self.trap.reveal()
 
-    def look(self):
+    def look(self) -> None:
         self.seen = True
 
 
 class Level:
     entrance: Room
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.entrance = Room()
 
 
 class World:
     levels: List[Level]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.levels = [Level()]
