@@ -23,6 +23,10 @@ class Game:
     time: int = 0
     MAX_TIME: int = 100
 
+    def __init__(self):
+        self.world = World()
+        self.hero = hero.Hero(self.world)
+
     def search(self) -> None:
         self.time += SEARCH_TIME
         room = self.hero.room
