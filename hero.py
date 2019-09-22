@@ -1,6 +1,6 @@
 from typing import Optional, Set
 
-from game import DamageType
+import game
 from world import Room
 
 
@@ -33,14 +33,14 @@ class Hero:
     hit_points: int
     max_hit_points: int
 
-    resistances: Set[DamageType]
+    resistances: Set["game.DamageType"]
 
     def rest(self) -> None:
         self.hit_points = self.max_hit_points
         for s in self.stats():
             s.heal()
 
-    def take_damage(self, amount: int, kind: DamageType) -> None:
+    def take_damage(self, amount: int, kind: "game.DamageType") -> None:
         if kind in self.resistances:
             amount //= 2
         self.hit_points = max(0, self.hit_points - amount)

@@ -1,6 +1,6 @@
 from enum import Enum
 
-from hero import Hero
+import hero
 from world import World, Direction
 from util import roll
 
@@ -17,7 +17,7 @@ REST_TIME = 48
 
 
 class Game:
-    hero: Hero
+    hero: hero.Hero
     world: World
 
     time: int = 0
