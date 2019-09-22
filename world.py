@@ -40,7 +40,7 @@ class Trap:
 
 class Room:
     terrain: Terrain
-    neighbors: Dict[Direction, Room]
+    neighbors: Dict[Direction, "Room"]
 
     # Doors
     door: Optional[Door]  # None means no door
