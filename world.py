@@ -1,6 +1,8 @@
 from enum import Enum, auto
 from typing import Dict, List, Optional
 
+import observer
+
 
 class Direction(Enum):
     NORTH = (0, -1)
@@ -38,7 +40,10 @@ class Trap:
         self.hide_dc = 0
 
 
-class Room:
+class Room(observer.Observable):
+
+    OBSERVABLE_FIELDS = {"seen"}
+
     level: "Level"
 
     terrain: Terrain = Terrain.EMPTY
@@ -55,6 +60,7 @@ class Room:
     def __init__(self, level: "Level") -> None:
         self.neighbors = {}
         self.level = level
+        super().__init__()
 
     @property
     def allows_sight(self) -> bool:
