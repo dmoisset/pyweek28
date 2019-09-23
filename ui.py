@@ -16,17 +16,19 @@ ROOM_SIZE = 36
 
 
 class RoomView:
-    def __init__(self, scene: Scene, room: world.Room, x: int, y: int) -> None:
+    def __init__(self, scene: Scene, room: world.Room) -> None:
         self.floor = scene.layers[FLOOR_LAYER].add_rect(
             width=ROOM_SIZE, height=ROOM_SIZE, fill=True, color="#555555"
         )
-        self.floor.pos = (x * ROOM_SPACING, y * ROOM_SPACING)
-        # Show/Hide
-        self.floor.scale = int(room.seen)
+        self.floor.pos = (room.x * ROOM_SPACING, room.y * ROOM_SPACING)
+
+        # Initial update
+        self.notify(room, {})
         room.register(self)
 
     def notify(self, obj: observer.Observable, message: observer.Message) -> None:
         room = cast(world.Room, obj)
+        # Show/Hide
         self.floor.scale = int(room.seen)
 
 
@@ -40,16 +42,15 @@ class UI:
     def show_map(self) -> None:
         shown_rooms = set()
         level = self.game.hero.room.level
-        pending_rooms = [(level.entrance, 0, 0)]
+        pending_rooms = [level.entrance]
         while pending_rooms:
-            room, x, y = pending_rooms.pop(-1)
+            room = pending_rooms.pop(-1)
             shown_rooms.add(room)
-            RoomView(self.scene, room, x, y)
+            RoomView(self.scene, room)
 
-            for d, n in room.neighbors.items():
-                dx, dy = d.value
+            for n in room.neighbors.values():
                 if n not in shown_rooms:
-                    pending_rooms.append((n, x + dx, y + dy))
+                    pending_rooms.append(n)
 
     def update(self, keyboard: Any) -> None:
         observer.dispatch_events()
