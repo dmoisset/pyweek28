@@ -83,15 +83,45 @@ class Room(observer.Observable):
 class Level:
     entrance: Room
 
-    def __init__(self) -> None:
-        r1, r2, r3 = [Room(self) for _ in "123"]
-        self.entrance = r1
-        r1.neighbors[Direction.EAST] = r2
-        r2.neighbors[Direction.SOUTH] = r3
+    def __init__(self, name: str) -> None:
+        filename = f"maps/{name}.map"
+        with open(filename, "r") as f:
+            lines = f.readlines()
+        width = len(lines[0])
+        height = len(lines)
+        if height % 2 == 0:
+            raise ValueError(
+                f"Malformed map, first line has height={height}, should be odd"
+            )
+        if width % 2:
+            raise ValueError(
+                f"Malformed map, first line has width={width}, should be even"
+            )
+        if any(len(l) != width for l in lines):
+            raise ValueError(
+                f"Malformed map, some lines have width different to {width}"
+            )
+
+        grid = [
+            [Room(self, x, y) for x in range(width // 2 - 1)]
+            for y in range(height // 2)
+        ]
+        for x in range(width // 2 - 1):
+            rx = 2 * x + 1
+            for y in range(height // 2):
+                ry = 2 * y + 1
+                room = grid[y][x]
+                for d in Direction:
+                    dx, dy = d.value
+                    if lines[ry + dy][rx + dx] == " ":
+                        # There is no wall in given direction, connect rooms
+                        room.neighbors[d] = grid[y + dy][x + dx]
+
+        self.entrance = grid[0][0]
 
 
 class World:
     levels: List[Level]
 
     def __init__(self) -> None:
-        self.levels = [Level()]
+        self.levels = [Level("level0")]
