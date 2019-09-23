@@ -1,6 +1,7 @@
 from typing import Optional, Set, Tuple
 
 import game
+import observer
 from world import World, Room
 
 
@@ -17,7 +18,11 @@ class Stat:
         self.damage = 0
 
 
-class Hero:
+class Hero(observer.Observable):
+
+    OBSERVABLE_FIELDS = {"room"}
+    OBSERVABLE_PROPERTIES = {"room": ("x", "y")}
+
     strength: Stat
     agility: Stat
     health: Stat
@@ -33,6 +38,7 @@ class Hero:
     resistances: Set["game.DamageType"]
 
     def __init__(self, world: World) -> None:
+        super().__init__()
         self.strength = Stat()
         self.agility = Stat()
         self.health = Stat()
@@ -70,3 +76,11 @@ class Hero:
         assert self.previous_room is not None
         self.room = self.previous_room
         self.previous_room = None
+
+    @property
+    def x(self) -> int:
+        return self.room.x
+
+    @property
+    def y(self) -> int:
+        return self.room.y
