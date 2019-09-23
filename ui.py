@@ -14,24 +14,61 @@ HERO_LAYER = 10
 
 # Dimension
 ROOM_SPACING = 80
-ROOM_SIZE = 76
+ROOM_SIZE = 72
+DOORWAY_SIZE = ROOM_SIZE - 2
 
 
 class RoomView:
     def __init__(self, scene: Scene, room: world.Room) -> None:
-        self.floor = scene.layers[FLOOR_LAYER].add_rect(
+        floor = scene.layers[FLOOR_LAYER]
+        self.room = room
+        self.floor = floor.add_rect(
             width=ROOM_SIZE, height=ROOM_SIZE, fill=True, color="#555555"
         )
         self.floor.pos = (room.x * ROOM_SPACING, room.y * ROOM_SPACING)
+        self.east_doorway = self.south_doorway = None
+        if world.Direction.EAST in room.neighbors:
+            self.east_doorway = floor.add_rect(
+                width=ROOM_SPACING - ROOM_SIZE,
+                height=DOORWAY_SIZE,
+                fill=True,
+                color="#555555",
+            )
+            self.east_doorway.pos = (
+                (room.x + 0.5) * ROOM_SPACING,
+                room.y * ROOM_SPACING,
+            )
+
+        if world.Direction.SOUTH in room.neighbors:
+            self.south_doorway = floor.add_rect(
+                width=DOORWAY_SIZE,
+                height=ROOM_SPACING - ROOM_SIZE,
+                fill=True,
+                color="#555555",
+            )
+            self.south_doorway.pos = (
+                room.x * ROOM_SPACING,
+                (room.y + 0.5) * ROOM_SPACING,
+            )
 
         # Initial update
         self.notify(room, {})
         room.register(self)
+        if self.east_doorway:
+            room.neighbors[world.Direction.EAST].register(self)
+        if self.south_doorway:
+            room.neighbors[world.Direction.SOUTH].register(self)
 
     def notify(self, obj: observer.Observable, message: observer.Message) -> None:
-        room = cast(world.Room, obj)
+        room = self.room
         # Show/Hide
         self.floor.scale = int(room.seen)
+        if self.east_doorway:
+            visible = room.seen or room.neighbors[world.Direction.EAST].seen
+            self.east_doorway.scale = int(visible)
+        if self.south_doorway:
+            visible = room.seen or room.neighbors[world.Direction.SOUTH].seen
+            self.south_doorway.scale = int(visible)
 
 
 class HeroView:
