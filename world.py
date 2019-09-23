@@ -45,6 +45,8 @@ class Room(observer.Observable):
     OBSERVABLE_FIELDS = {"seen"}
 
     level: "Level"
+    x: int
+    y: int
 
     terrain: Terrain = Terrain.EMPTY
     neighbors: Dict[Direction, "Room"]
@@ -57,9 +59,11 @@ class Room(observer.Observable):
 
     seen: bool = False
 
-    def __init__(self, level: "Level") -> None:
+    def __init__(self, level: "Level", x: int = 0, y: int = 0) -> None:
         self.neighbors = {}
         self.level = level
+        self.x = x
+        self.y = y
         super().__init__()
 
     @property
