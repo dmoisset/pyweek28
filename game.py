@@ -26,6 +26,7 @@ class Game:
     def __init__(self) -> None:
         self.world = World()
         self.hero = hero.Hero(self.world)
+        self.look()
 
     def search(self) -> None:
         self.time += SEARCH_TIME
