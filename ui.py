@@ -36,6 +36,7 @@ class RoomView:
 
 class HeroView:
     def __init__(self, scene: Scene, hero: hero.Hero) -> None:
+        self.scene = scene
         self.sprite = scene.layers[HERO_LAYER].add_sprite("hero")
         self.sprite.scale = 0.18
         self.notify(hero, {})
@@ -44,6 +45,7 @@ class HeroView:
     def notify(self, obj: observer.Observable, message: observer.Message) -> None:
         pc = cast(hero.Hero, obj)
         self.sprite.pos = (pc.x * ROOM_SPACING, pc.y * ROOM_SPACING)
+        self.scene.camera.pos = (pc.x * ROOM_SPACING, pc.y * ROOM_SPACING)
 
 
 class UI:
