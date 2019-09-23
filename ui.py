@@ -1,6 +1,7 @@
 from typing import Any, cast
 
-from wasabi2d import Scene, run, event
+from wasabi2d import Scene, run, event, keys
+from wasabi2d.constants import keymods
 
 import game
 import world
@@ -53,6 +54,17 @@ class UI:
     def update(self, keyboard: Any) -> None:
         observer.dispatch_events()
 
+    def on_key_up(self, key: keys, mod: keymods) -> None:
+        if key == keys.RIGHT:
+            self.game.move(world.Direction.EAST)
+        elif key == keys.UP:
+            self.game.move(world.Direction.NORTH)
+        elif key == keys.LEFT:
+            self.game.move(world.Direction.WEST)
+        elif key == keys.DOWN:
+            self.game.move(world.Direction.SOUTH)
+
     def run(self) -> None:
         event(self.update)
+        event(self.on_key_up)
         run()

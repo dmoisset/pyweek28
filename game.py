@@ -45,6 +45,7 @@ class Game:
                 return
             # todo: handle traps, monster, etcetc
             self.hero.enter(new_room)
+            self.look()
 
     def look(self) -> None:
         """Mark as seen rooms that are within line of sight"""
