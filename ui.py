@@ -4,15 +4,17 @@ from wasabi2d import Scene, run, event, keys
 from wasabi2d.constants import keymods
 
 import game
+import hero
 import world
 import observer
 
 # Layers
 FLOOR_LAYER = 0
+HERO_LAYER = 10
 
 # Dimension
-ROOM_SPACING = 40
-ROOM_SIZE = 36
+ROOM_SPACING = 80
+ROOM_SIZE = 76
 
 
 class RoomView:
@@ -32,12 +34,25 @@ class RoomView:
         self.floor.scale = int(room.seen)
 
 
+class HeroView:
+    def __init__(self, scene: Scene, hero: hero.Hero) -> None:
+        self.sprite = scene.layers[HERO_LAYER].add_sprite("hero")
+        self.sprite.scale = 0.18
+        self.notify(hero, {})
+        hero.register(self)
+
+    def notify(self, obj: observer.Observable, message: observer.Message) -> None:
+        pc = cast(hero.Hero, obj)
+        self.sprite.pos = (pc.x * ROOM_SPACING, pc.y * ROOM_SPACING)
+
+
 class UI:
     def __init__(self) -> None:
         self.scene = Scene()
         self.scene.camera.pos = (0, 0)
         self.game = game.Game()
         self.show_map()
+        self.show_hero()
 
     def show_map(self) -> None:
         shown_rooms = set()
@@ -51,6 +66,9 @@ class UI:
             for n in room.neighbors.values():
                 if n not in shown_rooms:
                     pending_rooms.append(n)
+
+    def show_hero(self) -> None:
+        HeroView(self.scene, self.game.hero)
 
     def update(self, keyboard: Any) -> None:
         observer.dispatch_events()
