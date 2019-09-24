@@ -4,12 +4,16 @@ from typing_extensions import Protocol
 
 from wasabi2d import Scene, run, event, keys
 from wasabi2d.constants import keymods
+from wasabi2d import game
 
 import observer
 
 
 class Controller(Protocol):
     def activate(self, scene: Scene) -> None:
+        ...
+
+    def deactivate(self, scene: Scene) -> None:
         ...
 
     def on_key_up(self, key: keys, mod: keymods) -> None:
@@ -29,7 +33,10 @@ class EventManager:
         self.stack.append(c)
 
     def pop(self) -> None:
-        del self.stack[-1]
+        deactivated = self.stack.pop(-1)
+        deactivated.deactivate(self.scene)
+        if not self.stack:
+            game.exit()
 
     def update(self, keyboard: Any) -> None:
         observer.dispatch_events()

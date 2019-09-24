@@ -13,9 +13,12 @@ class MapController:
 
     def activate(self, scene: Scene) -> None:
         self.scene = scene
-        self.scene.camera.pos = (0, 0)
+        scene.camera.pos = (0, 0)
         self.show_map()
         self.show_hero()
+
+    def deactivate(self, scene: Scene) -> None:
+        pass
 
     def show_map(self) -> None:
         shown_rooms = set()
