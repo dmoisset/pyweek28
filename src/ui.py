@@ -1,3 +1,4 @@
+import os
 from typing import Any, cast, List
 from typing_extensions import Protocol
 
@@ -138,7 +139,7 @@ class EventManager:
     stack: List[Controller]
 
     def __init__(self) -> None:
-        self.scene = Scene()
+        self.scene = Scene(rootdir=os.environ["RUNNER_DIRECTORY"])
         self.stack = []
 
     def push(self, c: Controller) -> None:
