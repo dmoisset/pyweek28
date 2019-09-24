@@ -71,7 +71,7 @@ class Observable:
         super().__setattr__(name, value)
         self.notify(message)
         for p in self.OBSERVABLE_PROPERTIES.get(name, ()):
-            self.notify({"p": "changed"})
+            self.notify({p: "changed"})
 
 
 __all__ = ["dispatch_events", "Observable", "Observer"]
