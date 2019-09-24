@@ -9,8 +9,6 @@ import observer
 
 
 class Controller(Protocol):
-    scene: Scene
-
     def activate(self, scene: Scene) -> None:
         ...
 
