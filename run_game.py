@@ -8,7 +8,8 @@ runner_dir = runner_path.parent
 os.environ["RUNNER_DIRECTORY"] = str(runner_dir)
 sys.path[:0] = [str(runner_dir / "src")]
 
-from ui import UI, MapController  # noqa
+from ui import UI  # noqa
+from controllers.map import MapController  # noqa
 
 if __name__ == "__main__":
     UI.push(MapController())
