@@ -1,6 +1,6 @@
 from typing import Any, cast
 
-from wasabi2d import Scene, run, event, keys
+from wasabi2d import Scene, run, event, keys, animate
 from wasabi2d.constants import keymods
 
 import game
@@ -81,8 +81,12 @@ class HeroView:
 
     def notify(self, obj: observer.Observable, message: observer.Message) -> None:
         pc = cast(hero.Hero, obj)
-        self.sprite.pos = (pc.x * ROOM_SPACING, pc.y * ROOM_SPACING)
-        self.scene.camera.pos = (pc.x * ROOM_SPACING, pc.y * ROOM_SPACING)
+        animate(self.sprite, pos=(pc.x * ROOM_SPACING, pc.y * ROOM_SPACING))
+        animate(
+            self.scene.camera,
+            duration=0.2,
+            pos=(pc.x * ROOM_SPACING, pc.y * ROOM_SPACING),
+        )
 
 
 class UI:
