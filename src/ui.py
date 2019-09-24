@@ -25,7 +25,9 @@ class EventManager:
     stack: List[Controller]
 
     def __init__(self) -> None:
-        self.scene = Scene(rootdir=os.environ["RUNNER_DIRECTORY"])
+        self.scene = Scene(
+            rootdir=os.environ["RUNNER_DIRECTORY"], width=1200, height=700
+        )
         self.stack = []
 
     def push(self, c: Controller) -> None:
