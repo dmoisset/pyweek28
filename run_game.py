@@ -1,5 +1,5 @@
-from ui import UI
+from ui import UI, MapController
 
 if __name__ == "__main__":
-    ui = UI()
-    ui.run()
+    UI.push(MapController())
+    UI.run()

@@ -1,4 +1,5 @@
-from typing import Any, cast
+from typing import Any, cast, List
+from typing_extensions import Protocol
 
 from wasabi2d import Scene, run, event, keys, animate
 from wasabi2d.constants import keymods
@@ -85,11 +86,23 @@ class HeroView:
         )
 
 
-class UI:
+class Controller(Protocol):
+    scene: Scene
+
+    def activate(self, scene: Scene) -> None:
+        ...
+
+    def on_key_up(self, key: keys, mod: keymods) -> None:
+        ...
+
+
+class MapController:
     def __init__(self) -> None:
-        self.scene = Scene()
-        self.scene.camera.pos = (0, 0)
         self.game = game.Game()
+
+    def activate(self, scene: Scene) -> None:
+        self.scene = scene
+        self.scene.camera.pos = (0, 0)
         self.show_map()
         self.show_hero()
 
@@ -109,9 +122,6 @@ class UI:
     def show_hero(self) -> None:
         HeroView(self.scene, self.game.hero)
 
-    def update(self, keyboard: Any) -> None:
-        observer.dispatch_events()
-
     def on_key_up(self, key: keys, mod: keymods) -> None:
         if key == keys.RIGHT:
             self.game.move(world.Direction.EAST)
@@ -122,7 +132,33 @@ class UI:
         elif key == keys.DOWN:
             self.game.move(world.Direction.SOUTH)
 
+
+class EventManager:
+
+    stack: List[Controller]
+
+    def __init__(self) -> None:
+        self.scene = Scene()
+        self.stack = []
+
+    def push(self, c: Controller) -> None:
+        c.activate(self.scene)
+        self.stack.append(c)
+
+    def pop(self) -> None:
+        del self.stack[-1]
+
+    def update(self, keyboard: Any) -> None:
+        observer.dispatch_events()
+
+    def on_key_up(self, key: keys, mod: keymods) -> None:
+        self.stack[-1].on_key_up(key, mod)
+
     def run(self) -> None:
+        assert self.stack, "Nothing to do, no controllers set up"
         event(self.update)
         event(self.on_key_up)
         run()
+
+
+UI = EventManager()
