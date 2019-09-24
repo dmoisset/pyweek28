@@ -19,20 +19,19 @@ DOORWAY_SIZE = ROOM_SIZE - 2
 
 
 class RoomView:
+    FLOOR_COLOR = ["#55555500", "#55555580", "#555555ff"]
+
     def __init__(self, scene: Scene, room: world.Room) -> None:
         floor = scene.layers[FLOOR_LAYER]
         self.room = room
         self.floor = floor.add_rect(
-            width=ROOM_SIZE, height=ROOM_SIZE, fill=True, color="#555555"
+            width=ROOM_SIZE, height=ROOM_SIZE, fill=True, color=self.FLOOR_COLOR[0]
         )
         self.floor.pos = (room.x * ROOM_SPACING, room.y * ROOM_SPACING)
         self.east_doorway = self.south_doorway = None
         if world.Direction.EAST in room.neighbors:
             self.east_doorway = floor.add_rect(
-                width=ROOM_SPACING - ROOM_SIZE,
-                height=DOORWAY_SIZE,
-                fill=True,
-                color="#555555",
+                width=ROOM_SPACING - ROOM_SIZE, height=DOORWAY_SIZE, fill=True
             )
             self.east_doorway.pos = (
                 (room.x + 0.5) * ROOM_SPACING,
@@ -41,10 +40,7 @@ class RoomView:
 
         if world.Direction.SOUTH in room.neighbors:
             self.south_doorway = floor.add_rect(
-                width=DOORWAY_SIZE,
-                height=ROOM_SPACING - ROOM_SIZE,
-                fill=True,
-                color="#555555",
+                width=DOORWAY_SIZE, height=ROOM_SPACING - ROOM_SIZE, fill=True
             )
             self.south_doorway.pos = (
                 room.x * ROOM_SPACING,
@@ -62,13 +58,13 @@ class RoomView:
     def notify(self, obj: observer.Observable, message: observer.Message) -> None:
         room = self.room
         # Show/Hide
-        self.floor.scale = int(room.seen)
+        self.floor.color = self.FLOOR_COLOR[2 * int(room.seen)]
         if self.east_doorway:
-            visible = room.seen or room.neighbors[world.Direction.EAST].seen
-            self.east_doorway.scale = int(visible)
+            visible = int(room.seen) + (room.neighbors[world.Direction.EAST].seen)
+            self.east_doorway.color = self.FLOOR_COLOR[visible]
         if self.south_doorway:
-            visible = room.seen or room.neighbors[world.Direction.SOUTH].seen
-            self.south_doorway.scale = int(visible)
+            visible = int(room.seen) + int(room.neighbors[world.Direction.SOUTH].seen)
+            self.south_doorway.color = self.FLOOR_COLOR[visible]
 
 
 class HeroView:
