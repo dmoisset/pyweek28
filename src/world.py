@@ -89,6 +89,20 @@ class Room(observer.Observable):
     def look(self) -> None:
         self.seen = True
 
+    def validate(self) -> None:
+        if self.door:
+            if len(self.neighbors) != 2:
+                raise ValueError(
+                    f"room[{self.y}][{self.x}]: doors should have exactly 2 exits!"
+                )
+            d0, d1 = self.neighbors.keys()
+            d0x, d0y = d0.value
+            d1x, d1y = d1.value
+            if d0x * d1x + d0y * d1y == 0:
+                raise ValueError(
+                    f"room[{self.y}][{self.x}]: doors should have 2 opposite exits!"
+                )
+
 
 class Level:
     entrance: Room
@@ -148,6 +162,7 @@ class Level:
                     raise ValueError(
                         f"line {ry+1} char {rx+1}: unknown room type {terrain!r}"
                     )
+                room.validate()
 
 
 class World:
