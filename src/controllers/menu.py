@@ -6,6 +6,7 @@ from wasabi2d.constants import keymods
 from menu import Menu
 from ui import UI
 from views.layer_ids import DIALOG_LAYER
+from views.dimensions import SCREEN_WIDTH
 
 MENU_WIDTH = 500
 ENTRY_HEIGHT = 40
@@ -27,7 +28,7 @@ class MenuController:
     def activate(self, scene: Scene) -> None:
         layer = scene.hudlayers[self.layer]
         height = 100 + ENTRY_HEIGHT * len(self.menu.entries)
-        cx, cy = 600, 50 + height / 2
+        cx, cy = SCREEN_WIDTH / 2, 50 + height / 2
         layer.add_rect(width=MENU_WIDTH, height=height, color="#0000aaff", pos=(cx, cy))
         top = cy - height / 2
         left = cx - MENU_WIDTH / 2
@@ -44,6 +45,7 @@ class MenuController:
             self.add_label(
                 scene,
                 e.label,
+                fontsize=18,
                 pos=(left + 20, top + 100 + i * ENTRY_HEIGHT),
                 color=e.color,
             )

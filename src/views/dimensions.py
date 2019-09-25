@@ -1,4 +1,8 @@
-# Dimensions
+# Screen Dimensions
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 700
+
+# Map Dimensions
 ROOM_SPACING = 80
 ROOM_SIZE = 72
 DOORWAY_SIZE = ROOM_SIZE - 2

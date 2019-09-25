@@ -8,6 +8,7 @@ from wasabi2d import game
 
 import observer
 from hudscene import HUDScene
+from views.dimensions import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 class Controller(Protocol):
@@ -27,7 +28,9 @@ class EventManager:
 
     def __init__(self) -> None:
         self.scene = HUDScene(
-            rootdir=os.environ["RUNNER_DIRECTORY"], width=1200, height=700
+            rootdir=os.environ["RUNNER_DIRECTORY"],
+            width=SCREEN_WIDTH,
+            height=SCREEN_HEIGHT,
         )
         self.stack = []
 

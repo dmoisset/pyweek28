@@ -3,6 +3,7 @@ from wasabi2d.constants import keymods
 
 from ui import UI
 from views.layer_ids import DIALOG_LAYER
+from views.dimensions import SCREEN_WIDTH
 
 
 class MessageController:
@@ -12,7 +13,7 @@ class MessageController:
 
     def activate(self, scene: Scene) -> None:
         layer = scene.hudlayers[self.layer]
-        cx, cy = 600, 100
+        cx, cy = SCREEN_WIDTH / 2, 100
         layer.add_rect(width=500, height=100, color="#0000aaff", pos=(cx, cy))
         layer.add_label(self.text, align="center", pos=(cx, cy + 10))
 
