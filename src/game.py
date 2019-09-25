@@ -85,14 +85,7 @@ class Game(Observable):
                 self.hero.room.door = None
                 self.add_message("Crash! the door opens!")
             else:
-                self.add_menu(
-                    Menu(
-                        title="The door resists",
-                        subtitle="What next?",
-                        entries=entries,
-                        cancel=self.hero.retreat,
-                    )
-                )
+                self.visit_door("WHAAAM! The door resists...")
             self.look()
 
         def search_traps() -> None:
