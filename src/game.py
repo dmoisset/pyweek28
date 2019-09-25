@@ -54,12 +54,12 @@ class Game:
         start.look()
         for d in Direction:
             room = start
-            while d in room.neighbors and room.neighbors[d].allows_sight:
-                room = room.neighbors[d]
+            while room.allows_sight and d in room.neighbors:
                 room.look()
-            if d in room.neighbors and room.neighbors[d].visible:
+                room = room.neighbors[d]
+            if room.visible:
                 # We got to a room that blocks vision, but can be looked at
-                room.neighbors[d].look()
+                room.look()
 
     def rest(self) -> None:
         self.time += REST_TIME
