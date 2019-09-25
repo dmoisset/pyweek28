@@ -25,7 +25,10 @@ class DoorKind(Enum):
     GOLD = auto()
 
 
-class Door:
+class Door(observer.Observable):
+
+    OBSERVABLE_FIELDS = {"hide_dc"}
+
     kind: DoorKind
     hide_dc: int = 0  # Difficulty of finding if hidden. 0 if found or not hidden
 

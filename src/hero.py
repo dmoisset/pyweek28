@@ -6,8 +6,8 @@ from world import World, Room
 
 
 class Stat:
-    score: int
-    damage: int
+    score: int = 0
+    damage: int = 0
 
     @property
     def bonus(self) -> int:

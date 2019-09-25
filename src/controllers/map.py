@@ -45,3 +45,5 @@ class MapController:
             self.game.move(world.Direction.WEST)
         elif key == keys.DOWN:
             self.game.move(world.Direction.SOUTH)
+        elif key == keys.S:
+            self.game.search()

@@ -32,18 +32,19 @@ class Game:
         self.time += SEARCH_TIME
         room = self.hero.room
         check = self.hero.awareness.bonus + roll()
-        for nr in room.neighbors:
-            room.reveal_hidden(check)
+        for nr in room.neighbors.values():
+            nr.reveal_hidden(check)
+        self.look()
 
     def move(self, direction: Direction) -> None:
         self.time += MOVE_TIME
         room = self.hero.room
         if direction in room.neighbors:
             new_room = room.neighbors[direction]
-            if new_room.door and new_room.door.hide_dc != 0:
+            if not new_room.visible:
                 # Hidden door; not moving
                 return
-            # todo: handle traps, monster, etcetc
+            # TODO: handle traps, monster, etc etc
             self.hero.enter(new_room)
             self.look()
 
