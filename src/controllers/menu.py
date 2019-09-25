@@ -14,8 +14,8 @@ ENTRY_HEIGHT = 40
 class MenuController:
     def __init__(self, menu: Menu, offset: int = 0):
         self.menu = menu
-        self.action_map = {keys[e.key]: e.action for e in menu.entries}
-        self.action_map[keys.ESCAPE] = menu.cancel
+        self.action_map = {keys[e.key]: e.action for e in menu.entries}  # type: ignore
+        self.action_map[keys.ESCAPE] = menu.cancel  # type: ignore
         self.layer = DIALOG_LAYER + offset
         self.layerhack = [float(self.layer)]
 
