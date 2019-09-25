@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, List
+from typing import Callable, Sequence
 
 
 @dataclass
@@ -15,7 +15,7 @@ class MenuItem:
 class Menu:
     title: str
     subtitle: str
-    entries: List[MenuItem]
+    entries: Sequence[MenuItem] = ()
     cancel: Callable[[], None] = lambda: None
 
 
@@ -28,10 +28,10 @@ def run(m: Menu) -> None:
     while True:
         choice = input(">")
         if choice == "":
-            m.cancel()
+            m.cancel()  # type: ignore
             return
         for e in m.entries:
             if e.key == choice:
-                e.action()
+                e.action()  # type: ignore
                 return
         print(f"No action for {choice!r}")
