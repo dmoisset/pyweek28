@@ -7,6 +7,7 @@ from wasabi2d.constants import keymods
 from wasabi2d import game
 
 import observer
+from hudscene import HUDScene
 
 
 class Controller(Protocol):
@@ -25,7 +26,7 @@ class EventManager:
     stack: List[Controller]
 
     def __init__(self) -> None:
-        self.scene = Scene(
+        self.scene = HUDScene(
             rootdir=os.environ["RUNNER_DIRECTORY"], width=1200, height=700
         )
         self.stack = []

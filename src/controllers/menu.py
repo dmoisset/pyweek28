@@ -22,12 +22,12 @@ class MenuController:
     def add_label(self, scene: Scene, text: str, **kwargs: Any) -> Any:
         new_layer = self.layerhack[-1] + 1 / 128
         self.layerhack.append(new_layer)
-        scene.layers[new_layer].add_label(text, **kwargs)
+        scene.hudlayers[new_layer].add_label(text, **kwargs)
 
     def activate(self, scene: Scene) -> None:
-        layer = scene.layers[self.layer]
+        layer = scene.hudlayers[self.layer]
         height = 100 + ENTRY_HEIGHT * len(self.menu.entries)
-        cx, cy = scene.camera.pos
+        cx, cy = 600, 50 + height / 2
         layer.add_rect(width=MENU_WIDTH, height=height, color="#0000aaff", pos=(cx, cy))
         top = cy - height / 2
         left = cx - MENU_WIDTH / 2
@@ -57,9 +57,9 @@ class MenuController:
                 )
 
     def deactivate(self, scene: Scene) -> None:
-        # scene.layers[self.layer].clear()
+        # scene.hudlayers[self.layer].clear()
         for l in self.layerhack:
-            scene.layers[l].clear()
+            scene.hudlayers[l].clear()
 
     def on_key_up(self, key: keys, mod: keymods) -> None:
         if key in self.action_map:
