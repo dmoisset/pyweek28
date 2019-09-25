@@ -102,14 +102,26 @@ class Game(Observable):
         def disarm_trap() -> None:
             raise NotImplementedError
 
-        entries = [MenuItem(key="K_1", label="[1] Break it", action=break_door)]
+        entries = [
+            MenuItem(
+                key="K_1",
+                label="[1] Break it",
+                subtitle="If the door is trapped, this will trigger the trap",
+                action=break_door,
+            )
+        ]
         if self.hero.room.trap is None or self.hero.room.trap.hide_dc > 0:
             entries.append(
                 MenuItem(key="K_2", label="[2] Check it for traps", action=search_traps)
             )
         else:
             entries.append(
-                MenuItem(key="K_2", label="[2] Disarm trap", action=disarm_trap)
+                MenuItem(
+                    key="K_2",
+                    label="[2] Disarm trap",
+                    subtitle="Failure will trigger the trap",
+                    action=disarm_trap,
+                )
             )
         entries.append(
             MenuItem(key="K_3", label="[3] Leave it alone", action=self.hero.retreat)
