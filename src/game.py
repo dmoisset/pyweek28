@@ -61,6 +61,10 @@ class Game(Observable):
     def move(self, direction: Direction) -> None:
         self.time += MOVE_TIME
         room = self.hero.room
+        if room.door is not None:
+            # the only way out from a door, is away
+            self.hero.retreat()
+            return
         if direction in room.neighbors:
             new_room = room.neighbors[direction]
             if not new_room.visible:
