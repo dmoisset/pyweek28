@@ -31,6 +31,7 @@ class Door(observer.Observable):
 
     kind: DoorKind
     hide_dc: int = 0  # Difficulty of finding if hidden. 0 if found or not hidden
+    break_dc: int = 15
 
     def reveal(self) -> None:
         self.hide_dc = 0

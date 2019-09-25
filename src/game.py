@@ -2,6 +2,7 @@ from enum import Enum
 
 import hero
 from world import World, Direction
+from menu import Menu, MenuItem, run
 from util import roll
 
 
@@ -13,6 +14,7 @@ class DamageType(Enum):
 
 SEARCH_TIME = 1
 MOVE_TIME = 1
+BREAK_TIME = 2
 REST_TIME = 48
 
 
@@ -47,6 +49,44 @@ class Game:
             # TODO: handle traps, monster, etc etc
             self.hero.enter(new_room)
             self.look()
+            if new_room.door:
+                self.visit_door()
+
+    def visit_door(self, title: str = "There is a door here") -> None:
+        def break_door() -> None:
+            self.time += BREAK_TIME
+            check = self.hero.strength.bonus + roll()
+            assert self.hero.room.door
+            if check >= self.hero.room.door.break_dc:
+                self.hero.room.door = None
+            else:
+                self.visit_door("The door resists!")
+            self.look()
+
+        def search_traps() -> None:
+            self.time += SEARCH_TIME
+            check = self.hero.awareness.bonus + roll()
+            self.hero.room.reveal_hidden(check)
+            # TODO: give feedback if something happened/didn't happen
+            self.look()
+
+        def disarm_trap() -> None:
+            raise NotImplementedError
+
+        entries = [MenuItem(key="1", label="Break it", action=break_door)]
+        if self.hero.room.trap is None or self.hero.room.trap.hide_dc > 0:
+            entries.append(
+                MenuItem(key="2", label="Check it for traps", action=search_traps)
+            )
+        else:
+            entries.append(MenuItem(key="2", label="Disarm trap", action=disarm_trap))
+        m = Menu(
+            title=title,
+            subtitle="What next?",
+            entries=entries,
+            cancel=self.hero.retreat,
+        )
+        run(m)
 
     def look(self) -> None:
         """Mark as seen rooms that are within line of sight"""
