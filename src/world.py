@@ -68,7 +68,13 @@ class Room(observer.Observable):
 
     @property
     def allows_sight(self) -> bool:
+        """True if it's possible to see beyond this square"""
         return self.door is None
+
+    @property
+    def visible(self) -> bool:
+        """True if it's possible to see this square"""
+        return self.door is None or self.door.hide_dc == 0
 
     def reveal_hidden(self, check: int) -> None:
         if self.door and 0 < self.door.hide_dc <= check:
@@ -106,18 +112,38 @@ class Level:
             [Room(self, x, y) for x in range(width // 2 - 1)]
             for y in range(height // 2)
         ]
+
+        # set a default entrance
+        self.entrance = grid[0][0]
+
         for x in range(width // 2 - 1):
             rx = 2 * x + 1
             for y in range(height // 2):
                 ry = 2 * y + 1
                 room = grid[y][x]
+                # Parse walls
                 for d in Direction:
                     dx, dy = d.value
                     if lines[ry + dy][rx + dx] == " ":
                         # There is no wall in given direction, connect rooms
                         room.neighbors[d] = grid[y + dy][x + dx]
-
-        self.entrance = grid[0][0]
+                # Parse room terrain
+                terrain = lines[ry][rx]
+                if terrain == "#":  # Door
+                    room.door = Door()
+                elif terrain == "S":  # Secret door
+                    room.door = Door()
+                    room.door.hide_dc = 15
+                elif terrain == "<":  # Staircase down
+                    self.entrance = room
+                elif terrain == ">":  # Staircase up
+                    pass  # FIXME
+                elif terrain == " ":
+                    pass
+                else:
+                    raise ValueError(
+                        f"line {ry+1} char {rx+1}: unknown room type {terrain!r}"
+                    )
 
 
 class World:

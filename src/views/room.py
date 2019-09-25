@@ -1,3 +1,5 @@
+import math
+
 from wasabi2d import Scene
 
 import observer
@@ -34,6 +36,13 @@ class RoomView:
                 room.x * ROOM_SPACING,
                 (room.y + 0.5) * ROOM_SPACING,
             )
+        self.door = floor.add_sprite("door", pos=self.floor.pos)
+        self.door.scale = ROOM_SIZE / 200
+        if (
+            world.Direction.EAST in room.neighbors
+            or world.Direction.WEST in room.neighbors
+        ):
+            self.door.angle = math.pi / 2
 
         # Initial update
         self.notify(room, {})
@@ -48,8 +57,18 @@ class RoomView:
         # Show/Hide
         self.floor.color = self.FLOOR_COLOR[2 * int(room.seen)]
         if self.east_doorway:
-            visible = int(room.seen) + (room.neighbors[world.Direction.EAST].seen)
+            east_room = room.neighbors[world.Direction.EAST]
+            if east_room.visible and room.visible:
+                visible = int(room.seen) + int(east_room.seen)
+            else:
+                visible = 0
             self.east_doorway.color = self.FLOOR_COLOR[visible]
         if self.south_doorway:
-            visible = int(room.seen) + int(room.neighbors[world.Direction.SOUTH].seen)
+            south_room = room.neighbors[world.Direction.SOUTH]
+            if south_room.visible and room.visible:
+                visible = int(room.seen) + int(south_room.seen)
+            else:
+                visible = 0
             self.south_doorway.color = self.FLOOR_COLOR[visible]
+        # Show door if present
+        self.door.color = (1, 1, 1, int(room.seen and room.door is not None))
