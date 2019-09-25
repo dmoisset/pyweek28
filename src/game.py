@@ -76,7 +76,7 @@ class Game(Observable):
             if new_room.door:
                 self.visit_door()
 
-    def visit_door(self) -> None:
+    def visit_door(self, title: str = "There is a door here") -> None:
         def break_door() -> None:
             self.time += BREAK_TIME
             check = self.hero.strength.bonus + roll()
@@ -101,6 +101,10 @@ class Game(Observable):
             self.hero.room.reveal_hidden(check)
             # TODO: give feedback if something happened/didn't happen
             self.look()
+            if self.hero.room.trap is None or self.hero.room.trap.hide_dc > 0:
+                self.visit_door("Doesn't seem to be trapped...")
+            else:
+                self.visit_door("It's a trap!")
 
         def disarm_trap() -> None:
             raise NotImplementedError
@@ -119,7 +123,7 @@ class Game(Observable):
         )
         self.add_menu(
             Menu(
-                title="There is a door here",
+                title=title,
                 subtitle="What next?",
                 entries=entries,
                 cancel=self.hero.retreat,
