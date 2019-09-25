@@ -53,7 +53,7 @@ class Observable:
     def unregister(self, observer: Observer) -> None:
         self.observers.remove(observer)
 
-    def notify(self, msg: Message) -> None:
+    def request_notify(self, msg: Message) -> None:
         if not self.observers:
             # This check is not required, but avoids storing a message that will not be used
             return
@@ -69,9 +69,9 @@ class Observable:
         if hasattr(self, name):
             message[name]["old"] = getattr(self, name)
         super().__setattr__(name, value)
-        self.notify(message)
+        self.request_notify(message)
         for p in self.OBSERVABLE_PROPERTIES.get(name, ()):
-            self.notify({p: "changed"})
+            self.request_notify({p: "changed"})
 
 
 __all__ = ["dispatch_events", "Observable", "Observer"]
