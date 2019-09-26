@@ -17,6 +17,9 @@ class DamageType(Enum):
 SEARCH_TIME = 1
 MOVE_TIME = 1
 BREAK_TIME = 2
+FIGHT_TIME = 2
+ESCAPE_TIME = 1
+DISARM_TIME = 4
 REST_TIME = 96
 
 
@@ -59,10 +62,16 @@ class Game(Observable):
             self.win = False
 
     def add_message(self, message: str, subtitle: str = "") -> None:
+        if self.win is not None:
+            # no need for extra messages
+            return
         self._events.append(Menu(title=message, subtitle=subtitle))
         self.request_notify({"events": self._events})
 
     def add_menu(self, menu: Menu) -> None:
+        if self.win is not None:
+            # no need for extra menus
+            return
         self._events.append(menu)
         self.request_notify({"events": self._events})
 
@@ -110,6 +119,7 @@ class Game(Observable):
         assert self.hero.room.monster
 
         def fight() -> None:
+            self.time += FIGHT_TIME
             check = self.hero.strength.bonus + roll()
             if check >= monster.ac:
                 self.add_message("You defeat the monster!")
@@ -119,6 +129,7 @@ class Game(Observable):
             self.hero.room.monster = None
 
         def escape() -> None:
+            self.time += ESCAPE_TIME
             check = self.hero.agility.bonus + roll()
             if check < monster.escape_dc:
                 self.add_message("The monster hits you as you retreat!")
@@ -221,6 +232,7 @@ class Game(Observable):
         assert self.hero.room.trap
         assert self.hero.room.trap.hide_dc == 0
 
+        self.time += DISARM_TIME
         trap = self.hero.room.trap
         check = self.hero.agility.bonus + roll()
         if check >= trap.disarm_dc:
