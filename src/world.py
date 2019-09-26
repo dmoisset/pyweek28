@@ -85,9 +85,16 @@ class Room(observer.Observable):
         return self.door is None or self.door.hide_dc == 0
 
     def reveal_hidden(self, check: int) -> None:
-        if self.door and 0 < self.door.hide_dc <= check:
-            self.door.reveal()
-        elif self.trap and 0 < self.trap.hide_dc <= check:
+        if self.door:
+            # we nest the conditions. If there's a door we can't find a trap within from a
+            # neighbor square; we need to check it from within
+            if 0 < self.door.hide_dc <= check:
+                self.door.reveal()
+        else:
+            self.reveal_traps(check)
+
+    def reveal_traps(self, check: int) -> None:
+        if self.trap and 0 < self.trap.hide_dc <= check:
             self.trap.reveal()
 
     def look(self) -> None:

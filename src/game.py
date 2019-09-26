@@ -96,6 +96,8 @@ class Game(Observable):
                     self.trigger_trap(
                         "As the door breaks, a trap within it is triggered!"
                     )
+                    # The trap is destroyed with the door
+                    self.hero.room.trap = None
                 else:
                     self.add_message("Crash! the door opens!")
             else:
@@ -109,7 +111,7 @@ class Game(Observable):
         def search_traps() -> None:
             self.time += SEARCH_TIME
             check = self.hero.awareness.bonus + roll()
-            self.hero.room.reveal_hidden(check)
+            self.hero.room.reveal_traps(check)
             # TODO: give feedback if something happened/didn't happen
             self.look()
             if self.hero.room.trap is None or self.hero.room.trap.hide_dc > 0:
@@ -164,6 +166,7 @@ class Game(Observable):
             self.visit_room(title="This seems difficult to disarm...")
         else:
             self.trigger_trap("You triggered the trap trying to disarm it!")
+            self.visit_room()
 
     def trigger_trap(self, title="You stepped on a trap!") -> None:
         assert self.hero.room.trap
