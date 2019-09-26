@@ -92,9 +92,18 @@ class Game(Observable):
             assert self.hero.room.door
             if check >= self.hero.room.door.break_dc:
                 self.hero.room.door = None
-                self.add_message("Crash! the door opens!")
+                if self.hero.room.trap:
+                    self.trigger_trap(
+                        "As the door breaks, a trap within it is triggered!"
+                    )
+                else:
+                    self.add_message("Crash! the door opens!")
             else:
-                self.visit_door("WHAAAM! The door resists...")
+                if self.hero.room.trap:
+                    self.trigger_trap("The door was trapped! you triggered it!")
+                    self.visit_door("...and the (trapped) door resists")
+                else:
+                    self.visit_door("WHAAAM! The door resists...")
             self.look()
 
         def search_traps() -> None:
@@ -150,6 +159,7 @@ class Game(Observable):
         if check >= trap.disarm_dc:
             self.add_message("You disarm it!")
             self.hero.room.trap = None
+            self.visit_room()
         elif check >= trap.disarm_dc // 2:
             self.visit_room(title="This seems difficult to disarm...")
         else:

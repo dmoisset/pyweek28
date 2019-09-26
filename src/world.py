@@ -1,7 +1,10 @@
 from enum import Enum, auto
+import random
 from typing import Dict, List, Optional
 
 import observer
+
+DOOR_TRAP_PROBABILITY = 0.6
 
 
 class Direction(Enum):
@@ -47,7 +50,7 @@ class Trap:
 
 class Room(observer.Observable):
 
-    OBSERVABLE_FIELDS = {"seen"}
+    OBSERVABLE_FIELDS = {"seen", "trap", "door"}
 
     level: "Level"
     x: int
@@ -150,9 +153,13 @@ class Level:
                 terrain = lines[ry][rx]
                 if terrain == "#":  # Door
                     room.door = Door()
+                    if random.random() <= DOOR_TRAP_PROBABILITY:
+                        room.trap = Trap()
                 elif terrain == "S":  # Secret door
                     room.door = Door()
                     room.door.hide_dc = 15
+                    if random.random() <= DOOR_TRAP_PROBABILITY:
+                        room.trap = Trap()
                 elif terrain == "<":  # Staircase down
                     self.entrance = room
                 elif terrain == ">":  # Staircase up
