@@ -212,3 +212,14 @@ class World:
 
     def __init__(self) -> None:
         self.levels = [Level("level0"), Level("level1")]
+
+    def level_number(self, l: Level) -> int:
+        return self.levels.index(l)
+
+    def level_above(self, l: Level) -> Optional[Level]:
+        i = self.level_number(l)
+        return self.levels[i + 1] if i + 1 < len(self.levels) else None
+
+    def level_below(self, l: Level) -> Optional[Level]:
+        i = self.level_number(l)
+        return self.levels[i - 1] if i > 0 else None

@@ -4,7 +4,7 @@ from typing import List, Optional
 import hero
 from observer import Observable, Message
 from menu import Menu, MenuItem
-from world import World, Direction
+from world import World, Direction, Level
 from util import roll
 
 
@@ -25,10 +25,11 @@ REST_TIME = 96
 
 class Game(Observable):
 
-    OBSERVABLE_FIELDS = {"time", "win"}
+    OBSERVABLE_FIELDS = {"time", "win", "current_level"}
 
     hero: hero.Hero
     world: World
+    current_level: Level
 
     _time: int = 0
     MAX_TIME: int = 1000
@@ -41,6 +42,7 @@ class Game(Observable):
         super().__init__()
         self.world = World()
         self.hero = hero.Hero(self.world)
+        self.current_level = self.hero.room.level
         self.hero.register(self)  # Look for the hero status
         self._events = []
         self.look()
@@ -110,10 +112,61 @@ class Game(Observable):
         room = self.hero.room
         if room.monster:
             self.monster_encounter()
-        if room.door:
+        elif room.is_entrance():
+            self.visit_entrance()
+        elif room.is_exit():
+            self.visit_exit()
+        elif room.door:
             self.visit_door(**kwargs)
         elif room.trap:
             self.visit_trap(**kwargs)
+
+    def visit_entrance(self) -> None:
+        below = self.world.level_below(self.current_level)
+        if below is not None:
+            entries = [
+                MenuItem(
+                    key="K_1",
+                    label="[1] Yes, go down",
+                    action=lambda: self.go_to_level(below, enter=False),  # type: ignore
+                ),
+                MenuItem(key="K_2", label="[2] Stay here", action=lambda: None),
+            ]
+            self.add_menu(
+                Menu(
+                    title=f"The stairs go down to level {self.world.level_number(below)+1}",
+                    subtitle="Go down?",
+                    entries=entries,
+                )
+            )
+
+    def visit_exit(self) -> None:
+        above = self.world.level_above(self.current_level)
+        if above is not None:
+            entries = [
+                MenuItem(
+                    key="K_1",
+                    label="[1] Yes, go up",
+                    action=lambda: self.go_to_level(above, enter=True),  # type: ignore
+                ),
+                MenuItem(key="K_2", label="[2] Stay here", action=lambda: None),
+            ]
+            self.add_menu(
+                Menu(
+                    title=f"The stairs go up to level {self.world.level_number(above)+1}",
+                    subtitle="Go up?",
+                    entries=entries,
+                )
+            )
+        else:
+            self.add_message("You reach the top of the tower!")
+            self.win = True
+
+    def go_to_level(self, new_level: Level, enter: bool) -> None:
+        self.time += MOVE_TIME
+        self.current_level = new_level
+        self.hero.room = new_level.entrance if enter else new_level.exit
+        self.look()
 
     def monster_encounter(self) -> None:
         assert self.hero.room.monster

@@ -103,3 +103,15 @@ class RoomView:
         )
         # Show monster if present
         self.monster.color = (1, 1, 1, int(room.seen and room.monster is not None))
+
+    def release(self) -> None:
+        room = self.room
+        room.unregister(self)
+        if self.east_doorway:
+            room.neighbors[world.Direction.EAST].unregister(self)
+        if self.south_doorway:
+            room.neighbors[world.Direction.SOUTH].unregister(self)
+
+    @staticmethod
+    def clear_layers(scene: Scene) -> None:
+        scene.layers[FLOOR_LAYER].clear()

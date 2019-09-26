@@ -1,3 +1,5 @@
+from typing import List
+
 from wasabi2d import keys, keymods
 
 from controllers.message import MessageController
@@ -16,6 +18,7 @@ class MapController:
     def __init__(self) -> None:
         self.game = game.Game()
         self.game.register(self)
+        self.rooms: List[RoomView] = []
 
     def activate(self, scene: HUDScene) -> None:
         self.scene = scene
@@ -34,11 +37,18 @@ class MapController:
         while pending_rooms:
             room = pending_rooms.pop(-1)
             shown_rooms.add(room)
-            RoomView(self.scene, room)
+            rv = RoomView(self.scene, room)
+            self.rooms.append(rv)
 
             for n in room.neighbors.values():
                 if n not in shown_rooms:
                     pending_rooms.append(n)
+
+    def clear_map(self) -> None:
+        for rv in self.rooms:
+            rv.release()
+        RoomView.clear_layers(self.scene)
+        self.rooms = []
 
     def show_hero(self) -> None:
         HeroView(self.scene, self.game.hero)
@@ -82,3 +92,6 @@ class MapController:
                         "You " + ("win!" if self.game.win else "lose!"), offset=-5
                     ),
                 )
+        if "current_level" in msg:
+            self.clear_map()
+            self.show_map()
