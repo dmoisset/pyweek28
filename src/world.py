@@ -2,6 +2,7 @@ from enum import Enum, auto
 import random
 from typing import Dict, List, Optional
 
+import game
 import observer
 
 DOOR_TRAP_PROBABILITY = 0.6
@@ -53,10 +54,14 @@ class Monster:
     escape_dc: int = 10
     damage: int = 2
 
+    def attack(self, g: "game.Game") -> None:
+        """Called when the monster successfully lands an attack. Bad stuff happens"""
+        g.hero.take_damage(self.damage, game.DamageType.PHYSICAL)
+
 
 class Room(observer.Observable):
 
-    OBSERVABLE_FIELDS = {"seen", "trap", "door"}
+    OBSERVABLE_FIELDS = {"seen", "trap", "door", "monster"}
 
     level: "Level"
     x: int

@@ -80,10 +80,56 @@ class Game(Observable):
     def visit_room(self, **kwargs: str) -> None:
         """Trigger actions when reentering a room"""
         room = self.hero.room
+        if room.monster:
+            self.monster_encounter(**kwargs)
         if room.door:
             self.visit_door(**kwargs)
         elif room.trap:
             self.visit_trap(**kwargs)
+
+    def monster_encounter(self) -> None:
+        assert self.hero.room.monster
+
+        def fight() -> None:
+            check = self.hero.strength.bonus + roll()
+            if check >= monster.ac:
+                self.add_message("You defeat the monster!")
+            else:
+                self.add_message("The monster hits you before being defeated!")
+                monster.attack(self)
+            self.hero.room.monster = None
+
+        def escape() -> None:
+            check = self.hero.agility.bonus + roll()
+            if check < monster.escape_dc:
+                self.add_message("The monster hits you as you retreat!")
+                monster.attack(self)
+            self.hero.retreat()
+
+        monster = self.hero.room.monster
+
+        entries = [
+            MenuItem(
+                key="K_1",
+                label="[1] Chaaaaarge!",
+                subtitle="The monster dies, but may hurt you.",
+                action=fight,
+            ),
+            MenuItem(
+                key="K_2",
+                label="[2] Try to escape",
+                subtitle="You retreat, but the monster may hurt you.",
+                action=escape,
+            ),
+        ]
+        self.add_menu(
+            Menu(
+                title="There is a monster here!",
+                subtitle="What next?",
+                entries=entries,
+                cancel=escape,
+            )
+        )
 
     def visit_door(self, title: str = "There is a door here") -> None:
         def break_door() -> None:
@@ -174,7 +220,7 @@ class Game(Observable):
         trap = self.hero.room.trap
         self.add_message(title)
         trap.reveal()
-        self.hero.damage += 1
+        self.hero.take_damage(1, DamageType.PHYSICAL)
 
     def visit_trap(self, title: str = "You get carefully closer to the trap") -> None:
         assert self.hero.room.trap
