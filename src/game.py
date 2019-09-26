@@ -1,8 +1,8 @@
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 import hero
-from observer import Observable
+from observer import Observable, Message
 from menu import Menu, MenuItem
 from world import World, Direction
 from util import roll
@@ -22,13 +22,15 @@ REST_TIME = 96
 
 class Game(Observable):
 
-    OBSERVABLE_FIELDS = {"time"}
+    OBSERVABLE_FIELDS = {"time", "win"}
 
     hero: hero.Hero
     world: World
 
-    time: int = 0
-    MAX_TIME: int = 100
+    _time: int = 0
+    MAX_TIME: int = 1000
+
+    win: Optional[bool] = None  # True when win, False when lost
 
     _events: List[Menu]
 
@@ -36,8 +38,25 @@ class Game(Observable):
         super().__init__()
         self.world = World()
         self.hero = hero.Hero(self.world)
+        self.hero.register(self)  # Look for the hero status
         self._events = []
         self.look()
+
+    @property
+    def time(self) -> int:
+        return self._time
+
+    @time.setter
+    def time(self, value: int):
+        self._time = value
+        if value >= self.MAX_TIME:
+            # You lost!
+            self.win = False
+
+    def notify(self, obj: Observable, msg: Message) -> None:
+        if obj is self.hero and self.hero.hit_points == 0:
+            # You lost!
+            self.win = False
 
     def add_message(self, message: str, subtitle: str = "") -> None:
         self._events.append(Menu(title=message, subtitle=subtitle))

@@ -62,14 +62,23 @@ class MapController:
             self.game.rest()
 
     def notify(self, obj: Observable, msg: Message) -> None:
-        # Handle game events
-        events = reversed(self.game.pop_events())
-        # events are reversed, so most recent ones end up the top of the stack
-        # and are processed first by the user
-        for i, menu in enumerate(events):
-            c: Controller
-            if not menu.entries:
-                c = MessageController(f"{menu.title}\n{menu.subtitle}", offset=i)
-            else:
-                c = MenuController(menu, offset=i)
-            UI.push(c)
+        if "events" in msg:
+            # Handle game events
+            events = reversed(self.game.pop_events())
+            # events are reversed, so most recent ones end up the top of the stack
+            # and are processed first by the user
+            for i, menu in enumerate(events):
+                c: Controller
+                if not menu.entries:
+                    c = MessageController(f"{menu.title}\n{menu.subtitle}", offset=i)
+                else:
+                    c = MenuController(menu, offset=i)
+                UI.push(c)
+        if "win" in msg:
+            if self.game.win is not None:
+                UI.replace(
+                    self,
+                    MessageController(
+                        "You " + ("win!" if self.game.win else "lose!"), offset=-5
+                    ),
+                )

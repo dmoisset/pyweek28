@@ -43,6 +43,16 @@ class EventManager:
         if not self.stack:
             game.exit()
 
+    def replace(self, old: Controller, new: Controller) -> None:
+        try:
+            i = self.stack.index(old)
+        except ValueError:
+            # Nothing to replace
+            return
+        self.stack[i].deactivate(self.scene)
+        new.activate(self.scene)
+        self.stack[i] = new
+
     def update(self, keyboard: Any) -> None:
         observer.dispatch_events()
 
