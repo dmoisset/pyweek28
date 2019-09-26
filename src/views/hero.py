@@ -41,12 +41,16 @@ class HitPointView:
     def __init__(self, scene: HUDScene, hero: hero.Hero) -> None:
         self.below = scene.hudlayers[HP_METER_LAYER]
 
-        above = scene.hudlayers[HP_METER_LAYER + 1]
+        above = scene.hudlayers[HP_METER_LAYER + 2]
         above.add_rect(
             width=HP_METER_WIDTH, height=HP_METER_HEIGHT, pos=HP_METER_POS, fill=False
         )
         self.counter = above.add_label(
-            "0/0", align="center", fontsize=HP_METER_HEIGHT * 0.7, pos=HP_METER_POS
+            "0/0",
+            align="center",
+            fontsize=HP_METER_HEIGHT * 0.7,
+            pos=HP_METER_POS,
+            color="#5555aa",
         )
         self.counter.y += HP_METER_HEIGHT * 0.3
         self.meter: Optional[polygons.Rect] = None
