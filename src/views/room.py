@@ -49,6 +49,10 @@ class RoomView:
         self.trap = floor.add_sprite("trap", pos=self.floor.pos)
         self.trap.scale = 0.5
 
+        # Monster
+        self.monster = floor.add_sprite("monster", pos=self.floor.pos)
+        self.monster.scale = 0.15
+
         # Initial update
         self.notify(room, {})
         room.register(self)
@@ -84,3 +88,5 @@ class RoomView:
             1,
             int(room.seen and room.trap is not None and room.trap.hide_dc == 0),
         )
+        # Show monster if present
+        self.monster.color = (1, 1, 1, int(room.seen and room.monster is not None))

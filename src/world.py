@@ -48,6 +48,12 @@ class Trap:
         self.hide_dc = 0
 
 
+class Monster:
+    ac: int = 12
+    escape_dc: int = 10
+    damage: int = 2
+
+
 class Room(observer.Observable):
 
     OBSERVABLE_FIELDS = {"seen", "trap", "door"}
@@ -64,6 +70,9 @@ class Room(observer.Observable):
 
     # Traps
     trap: Optional[Trap] = None  # None means no trap
+
+    # Monsters
+    monster: Optional[Monster] = None  # None means no monster
 
     seen: bool = False
 
@@ -175,6 +184,8 @@ class Level:
                     pass
                 elif terrain == "^":  # Standalone Trap
                     room.trap = Trap()
+                elif terrain == "M":
+                    room.monster = Monster()
                 else:
                     raise ValueError(
                         f"line {ry+1} char {rx+1}: unknown room type {terrain!r}"
