@@ -17,10 +17,12 @@ class DamageType(Enum):
 SEARCH_TIME = 1
 MOVE_TIME = 1
 BREAK_TIME = 2
-REST_TIME = 48
+REST_TIME = 96
 
 
 class Game(Observable):
+
+    OBSERVABLE_FIELDS = {"time"}
 
     hero: hero.Hero
     world: World

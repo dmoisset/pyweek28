@@ -8,6 +8,7 @@ from observer import Observable, Message
 from ui import UI, Controller
 import world
 from views.room import RoomView
+from views.game_info import GameInfoView
 from views.hero import HeroView
 
 
@@ -21,6 +22,7 @@ class MapController:
         scene.camera.pos = (0, 0)
         self.show_map()
         self.show_hero()
+        self.show_hud()
 
     def deactivate(self, scene: Scene) -> None:
         pass
@@ -40,6 +42,9 @@ class MapController:
 
     def show_hero(self) -> None:
         HeroView(self.scene, self.game.hero)
+
+    def show_hud(self) -> None:
+        GameInfoView(self.scene, self.game)
 
     def on_key_up(self, key: keys, mod: keymods) -> None:
         if key == keys.RIGHT:
