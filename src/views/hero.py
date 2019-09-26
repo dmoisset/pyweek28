@@ -1,6 +1,7 @@
-from typing import cast
+from typing import cast, Optional
 
 from wasabi2d import animate
+from wasabi2d.primitives import polygons
 
 import hero
 from hudscene import HUDScene
@@ -48,7 +49,7 @@ class HitPointView:
             "0/0", align="center", fontsize=HP_METER_HEIGHT * 0.7, pos=HP_METER_POS
         )
         self.counter.y += HP_METER_HEIGHT * 0.3
-        self.meter = None
+        self.meter: Optional[polygons.Rect] = None
 
         hero.register(self)
         self.notify(hero, {})
@@ -61,7 +62,7 @@ class HitPointView:
         ratio = pc.hit_points / pc.max_hit_points
         width = HP_METER_WIDTH * ratio
         if ratio <= 0.25:
-            color = (1, 0, 0)
+            color = (1.0, 0.0, 0.0)
         elif ratio <= 0.75:
             color = (1, 2 * (ratio - 0.25), 0)
         else:

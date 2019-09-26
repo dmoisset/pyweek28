@@ -50,7 +50,7 @@ class Game(Observable):
         return self._time
 
     @time.setter
-    def time(self, value: int):
+    def time(self, value: int) -> None:
         self._time = value
         if value >= self.MAX_TIME:
             # You lost!
@@ -109,7 +109,7 @@ class Game(Observable):
         """Trigger actions when reentering a room"""
         room = self.hero.room
         if room.monster:
-            self.monster_encounter(**kwargs)
+            self.monster_encounter()
         if room.door:
             self.visit_door(**kwargs)
         elif room.trap:
@@ -245,7 +245,7 @@ class Game(Observable):
             self.trigger_trap("You triggered the trap trying to disarm it!")
             self.visit_room()
 
-    def trigger_trap(self, title="You stepped on a trap!") -> None:
+    def trigger_trap(self, title: str = "You stepped on a trap!") -> None:
         assert self.hero.room.trap
 
         trap = self.hero.room.trap
