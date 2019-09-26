@@ -9,6 +9,9 @@ from views.dimensions import SCREEN_WIDTH
 MENU_WIDTH = 500
 ENTRY_HEIGHT = 40
 
+BOX_COLOR = "#0000aaff"
+BORDER_COLOR = "#7777aaff"
+
 
 class MenuController:
     def __init__(self, menu: Menu, offset: int = 0):
@@ -21,7 +24,14 @@ class MenuController:
         layer = scene.hudlayers[self.layer]
         height = 100 + ENTRY_HEIGHT * len(self.menu.entries)
         cx, cy = SCREEN_WIDTH / 2, 50 + height / 2
-        layer.add_rect(width=MENU_WIDTH, height=height, color="#0000aaff", pos=(cx, cy))
+        layer.add_rect(width=MENU_WIDTH, height=height, color=BOX_COLOR, pos=(cx, cy))
+        layer.add_rect(
+            width=MENU_WIDTH,
+            height=height,
+            color=BORDER_COLOR,
+            pos=(cx, cy),
+            fill=False,
+        )
         top = cy - height / 2
         left = cx - MENU_WIDTH / 2
         layer.add_label(self.menu.title, align="center", pos=(cx, top + 40))
