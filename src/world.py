@@ -128,9 +128,16 @@ class Room(observer.Observable):
                     f"room[{self.y}][{self.x}]: doors should have 2 opposite exits!"
                 )
 
+    def is_entrance(self) -> bool:
+        return self.level.entrance is self
+
+    def is_exit(self) -> bool:
+        return self.level.exit is self
+
 
 class Level:
     entrance: Room
+    exit: Room
 
     def __init__(self, name: str) -> None:
         filename = f"maps/{name}.map"
@@ -184,7 +191,7 @@ class Level:
                 elif terrain == "<":  # Staircase down
                     self.entrance = room
                 elif terrain == ">":  # Staircase up
-                    pass  # FIXME
+                    self.exit = room
                 elif terrain == " ":
                     pass
                 elif terrain == "^":  # Standalone Trap
@@ -196,10 +203,12 @@ class Level:
                         f"line {ry+1} char {rx+1}: unknown room type {terrain!r}"
                     )
                 room.validate()
+        if "exit" not in vars(self):
+            raise ValueError("Map has no exit!")
 
 
 class World:
     levels: List[Level]
 
     def __init__(self) -> None:
-        self.levels = [Level("level0")]
+        self.levels = [Level("level0"), Level("level1")]

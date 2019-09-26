@@ -36,6 +36,17 @@ class RoomView:
                 room.x * ROOM_SPACING,
                 (room.y + 0.5) * ROOM_SPACING,
             )
+
+        # stairs
+        self.stairs = None
+        if room.is_entrance():
+            self.stairs = floor.add_sprite("downstairs", pos=self.floor.pos)
+            self.stairs.scale = ROOM_SIZE / 64
+
+        if room.is_exit():
+            self.stairs = floor.add_sprite("upstairs", pos=self.floor.pos)
+            self.stairs.scale = ROOM_SIZE / 64
+
         # Door
         self.door = floor.add_sprite("door", pos=self.floor.pos)
         self.door.scale = ROOM_SIZE / 200
@@ -65,6 +76,8 @@ class RoomView:
         room = self.room
         # Show/Hide
         self.floor.color = self.FLOOR_COLOR[2 * int(room.seen)]
+        if self.stairs:
+            self.stairs.color = (1, 1, 1, int(room.seen))
         if self.east_doorway:
             east_room = room.neighbors[world.Direction.EAST]
             if east_room.visible and room.visible:
