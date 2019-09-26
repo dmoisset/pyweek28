@@ -321,6 +321,12 @@ class Game(Observable):
                     subtitle="Failure MAY trigger the trap",
                     action=self.disarm_trap,
                 ),
+                MenuItem(
+                    key="K_3",
+                    label="[3] Walk thorugh trap",
+                    subtitle="Will trigger the trap, but you'll be able to walk past",
+                    action=self.trigger_trap,
+                ),
             ]
             self.add_menu(
                 Menu(
