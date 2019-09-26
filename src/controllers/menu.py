@@ -1,6 +1,6 @@
-from wasabi2d import keys, Scene
-from wasabi2d.constants import keymods
+from wasabi2d import keys, keymods
 
+from hudscene import HUDScene
 from menu import Menu
 from ui import UI
 from views.layer_ids import DIALOG_LAYER
@@ -17,7 +17,7 @@ class MenuController:
         self.action_map[keys.ESCAPE] = menu.cancel  # type: ignore
         self.layer = DIALOG_LAYER + offset
 
-    def activate(self, scene: Scene) -> None:
+    def activate(self, scene: HUDScene) -> None:
         layer = scene.hudlayers[self.layer]
         height = 100 + ENTRY_HEIGHT * len(self.menu.entries)
         cx, cy = SCREEN_WIDTH / 2, 50 + height / 2
@@ -47,7 +47,7 @@ class MenuController:
                     color="#aaaaaa",
                 )
 
-    def deactivate(self, scene: Scene) -> None:
+    def deactivate(self, scene: HUDScene) -> None:
         scene.hudlayers[self.layer].clear()
 
     def on_key_up(self, key: keys, mod: keymods) -> None:

@@ -1,9 +1,9 @@
-from wasabi2d import keys, Scene
-from wasabi2d.constants import keymods
+from wasabi2d import keys, keymods
 
 from controllers.message import MessageController
 from controllers.menu import MenuController
 import game
+from hudscene import HUDScene
 from observer import Observable, Message
 from ui import UI, Controller
 import world
@@ -17,14 +17,14 @@ class MapController:
         self.game = game.Game()
         self.game.register(self)
 
-    def activate(self, scene: Scene) -> None:
+    def activate(self, scene: HUDScene) -> None:
         self.scene = scene
         scene.camera.pos = (0, 0)
         self.show_map()
         self.show_hero()
         self.show_hud()
 
-    def deactivate(self, scene: Scene) -> None:
+    def deactivate(self, scene: HUDScene) -> None:
         pass
 
     def show_map(self) -> None:

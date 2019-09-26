@@ -1,8 +1,7 @@
 from typing import cast
 
-from wasabi2d import Scene
-
 import game
+from hudscene import HUDScene
 import observer
 from views.dimensions import SCREEN_HEIGHT
 
@@ -19,7 +18,7 @@ def convert_time(t: int) -> str:
 
 
 class GameInfoView:
-    def __init__(self, scene: Scene, game: game.Game) -> None:
+    def __init__(self, scene: HUDScene, game: game.Game) -> None:
         self.scene = scene
         self.time_label = scene.hudlayers[1].add_label(
             "<Time>", pos=(30, SCREEN_HEIGHT - 30)

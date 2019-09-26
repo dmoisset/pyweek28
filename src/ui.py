@@ -2,8 +2,7 @@ import os
 from typing import Any, List
 from typing_extensions import Protocol
 
-from wasabi2d import Scene, run, event, keys
-from wasabi2d.constants import keymods
+from wasabi2d import run, event, keys, keymods
 from wasabi2d import game
 
 import observer
@@ -12,10 +11,10 @@ from views.dimensions import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 class Controller(Protocol):
-    def activate(self, scene: Scene) -> None:
+    def activate(self, scene: HUDScene) -> None:
         ...
 
-    def deactivate(self, scene: Scene) -> None:
+    def deactivate(self, scene: HUDScene) -> None:
         ...
 
     def on_key_up(self, key: keys, mod: keymods) -> None:

@@ -1,15 +1,18 @@
 from typing import cast
 
-from wasabi2d import animate, Scene
+from wasabi2d import animate
 
 import hero
+from hudscene import HUDScene
 import observer
 from views.layer_ids import HERO_LAYER
 from views.dimensions import ROOM_SPACING
 
 
 class HeroView:
-    def __init__(self, scene: Scene, hero: hero.Hero) -> None:
+    """View for the hero token on the map"""
+
+    def __init__(self, scene: HUDScene, hero: hero.Hero) -> None:
         self.scene = scene
         self.sprite = scene.layers[HERO_LAYER].add_sprite("hero")
         self.sprite.scale = 0.18
