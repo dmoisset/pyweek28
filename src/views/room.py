@@ -36,6 +36,7 @@ class RoomView:
                 room.x * ROOM_SPACING,
                 (room.y + 0.5) * ROOM_SPACING,
             )
+        # Door
         self.door = floor.add_sprite("door", pos=self.floor.pos)
         self.door.scale = ROOM_SIZE / 200
         if (
@@ -43,6 +44,10 @@ class RoomView:
             or world.Direction.WEST in room.neighbors
         ):
             self.door.angle = math.pi / 2
+
+        # Trap
+        self.trap = floor.add_sprite("trap", pos=self.floor.pos)
+        self.trap.scale = 0.5
 
         # Initial update
         self.notify(room, {})
@@ -72,3 +77,10 @@ class RoomView:
             self.south_doorway.color = self.FLOOR_COLOR[visible]
         # Show door if present
         self.door.color = (1, 1, 1, int(room.seen and room.door is not None))
+        # Show trap if present and detected
+        self.trap.color = (
+            1,
+            1,
+            1,
+            int(room.seen and room.trap is not None and room.trap.hide_dc == 0),
+        )

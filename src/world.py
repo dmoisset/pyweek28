@@ -38,7 +38,8 @@ class Door(observer.Observable):
 
 
 class Trap:
-    hide_dc: int = 0  # Difficulty of finding if hidden. 0 if found or not hidden
+    hide_dc: int = 15  # Difficulty of finding if hidden. 0 if found or not hidden
+    disarm_dc: int = 18
 
     def reveal(self) -> None:
         self.hide_dc = 0
@@ -158,6 +159,8 @@ class Level:
                     pass  # FIXME
                 elif terrain == " ":
                     pass
+                elif terrain == "^":  # Standalone Trap
+                    room.trap = Trap()
                 else:
                     raise ValueError(
                         f"line {ry+1} char {rx+1}: unknown room type {terrain!r}"

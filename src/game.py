@@ -75,8 +75,15 @@ class Game(Observable):
             # TODO: handle traps, monster, etc etc
             self.hero.enter(new_room)
             self.look()
-            if new_room.door:
-                self.visit_door()
+            self.visit_room()
+
+    def visit_room(self, **kwargs: str) -> None:
+        """Trigger actions when reentering a room"""
+        room = self.hero.room
+        if room.door:
+            self.visit_door(**kwargs)
+        elif room.trap:
+            self.visit_trap(**kwargs)
 
     def visit_door(self, title: str = "There is a door here") -> None:
         def break_door() -> None:
@@ -97,12 +104,9 @@ class Game(Observable):
             # TODO: give feedback if something happened/didn't happen
             self.look()
             if self.hero.room.trap is None or self.hero.room.trap.hide_dc > 0:
-                self.visit_door("Doesn't seem to be trapped...")
+                self.visit_room(title="Doesn't seem to be trapped...")
             else:
-                self.visit_door("It's a trap!")
-
-        def disarm_trap() -> None:
-            raise NotImplementedError
+                self.visit_room(title="It's a trap!")
 
         entries = [
             MenuItem(
@@ -122,7 +126,7 @@ class Game(Observable):
                     key="K_2",
                     label="[2] Disarm trap",
                     subtitle="Failure will trigger the trap",
-                    action=disarm_trap,
+                    action=self.disarm_trap,
                 )
             )
         entries.append(
@@ -136,6 +140,53 @@ class Game(Observable):
                 cancel=self.hero.retreat,
             )
         )
+
+    def disarm_trap(self) -> None:
+        assert self.hero.room.trap
+        assert self.hero.room.trap.hide_dc == 0
+
+        trap = self.hero.room.trap
+        check = self.hero.agility.bonus + roll()
+        if check >= trap.disarm_dc:
+            self.add_message("You disarm it!")
+            self.hero.room.trap = None
+        elif check >= trap.disarm_dc // 2:
+            self.visit_room(title="This seems difficult to disarm...")
+        else:
+            self.trigger_trap("You triggered the trap trying to disarm it!")
+
+    def trigger_trap(self, title="You stepped on a trap!") -> None:
+        assert self.hero.room.trap
+
+        trap = self.hero.room.trap
+        self.add_message(title)
+        trap.reveal()
+        self.hero.damage += 1
+
+    def visit_trap(self, title: str = "You get carefully closer to the trap") -> None:
+        assert self.hero.room.trap
+
+        trap = self.hero.room.trap
+        if trap.hide_dc != 0:
+            self.trigger_trap()
+        else:
+            entries = [
+                MenuItem(key="K_1", label="[1] Retreat", action=self.hero.retreat),
+                MenuItem(
+                    key="K_2",
+                    label="[2] Disarm trap",
+                    subtitle="Failure MAY trigger the trap",
+                    action=self.disarm_trap,
+                ),
+            ]
+            self.add_menu(
+                Menu(
+                    title=title,
+                    subtitle="What next?",
+                    entries=entries,
+                    cancel=self.hero.retreat,
+                )
+            )
 
     def look(self) -> None:
         """Mark as seen rooms that are within line of sight"""
