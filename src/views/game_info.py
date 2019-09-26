@@ -21,11 +21,13 @@ class GameInfoView:
     def __init__(self, scene: HUDScene, game: game.Game) -> None:
         self.scene = scene
         self.time_label = scene.hudlayers[1].add_label(
-            "<Time>", pos=(30, SCREEN_HEIGHT - 30)
+            "<Time>", pos=(30, SCREEN_HEIGHT - 50)
         )
         game.register(self)
         self.notify(game, {})
 
     def notify(self, obj: observer.Observable, message: observer.Message) -> None:
         g = cast(game.Game, obj)
-        self.time_label.text = convert_time(g.time)
+        level = g.world.level_number(g.hero.room.level) + 1
+        nlevels = len(g.world.levels)
+        self.time_label.text = f"Level {level}/{nlevels}\n{convert_time(g.time)}"
