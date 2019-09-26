@@ -20,8 +20,12 @@ class Stat:
 
 class Hero(observer.Observable):
 
-    OBSERVABLE_FIELDS = {"room"}
-    OBSERVABLE_PROPERTIES = {"room": ("x", "y")}
+    OBSERVABLE_FIELDS = {"room", "max_hit_points", "damage"}
+    OBSERVABLE_PROPERTIES = {
+        "room": ("x", "y"),
+        "max_hit_points": ("hit_points",),
+        "damage": ("hit_points",),
+    }
 
     strength: Stat
     agility: Stat
@@ -47,7 +51,7 @@ class Hero(observer.Observable):
 
         self.room = world.levels[0].entrance
         self.resistances = set()
-        self.max_hitpoints = 10  # FIXME: HP FORMULA BASED ON STATS!
+        self.max_hit_points = 10  # FIXME: HP FORMULA BASED ON STATS!
 
     def stats(self) -> Tuple[Stat, ...]:
         return (self.strength, self.agility, self.health, self.awareness, self.power)
