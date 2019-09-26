@@ -58,6 +58,8 @@ class MapController:
             self.game.move(world.Direction.SOUTH)
         elif key == keys.S:
             self.game.search()
+        elif key == keys.R:
+            self.game.rest()
 
     def notify(self, obj: Observable, msg: Message) -> None:
         # Handle game events

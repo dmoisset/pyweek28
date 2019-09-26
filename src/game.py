@@ -153,3 +153,4 @@ class Game(Observable):
     def rest(self) -> None:
         self.time += REST_TIME
         self.hero.rest()
+        self.add_message("Nothing like some sleep to feel better...")
