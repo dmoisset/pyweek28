@@ -36,15 +36,15 @@ class Door(observer.Observable):
 
     kind: DoorKind
     hide_dc: int = 0  # Difficulty of finding if hidden. 0 if found or not hidden
-    break_dc: int = 15
+    break_dc: int = 12
 
     def reveal(self) -> None:
         self.hide_dc = 0
 
 
 class Trap:
-    hide_dc: int = 15  # Difficulty of finding if hidden. 0 if found or not hidden
-    disarm_dc: int = 18
+    hide_dc: int = 12  # Difficulty of finding if hidden. 0 if found or not hidden
+    disarm_dc: int = 15
 
     def reveal(self) -> None:
         self.hide_dc = 0
@@ -189,7 +189,7 @@ class Level:
                         room.trap = Trap()
                 elif terrain == "S":  # Secret door
                     room.door = Door()
-                    room.door.hide_dc = 15
+                    room.door.hide_dc = 10
                     if random.random() <= DOOR_TRAP_PROBABILITY:
                         room.trap = Trap()
                 elif terrain == "<":  # Staircase down

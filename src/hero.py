@@ -10,6 +10,9 @@ class Stat:
     score: int = 0
     damage: int = 0
 
+    def __init__(self, score: int = 0) -> None:
+        self.score = score
+
     @property
     def bonus(self) -> int:
         """Bonus to dice rolls when using this ability"""
@@ -47,10 +50,10 @@ class Hero(observer.Observable):
     def __init__(self, world: World) -> None:
         super().__init__()
         self.strength = Stat()
-        self.agility = Stat()
+        self.agility = Stat(score=2)
         self.health = Stat()
         self.awareness = Stat()
-        self.power = Stat()
+        self.power = Stat(score=6)
 
         self.room = world.levels[0].entrance
         self.resistances = set()

@@ -35,7 +35,7 @@ that can harm the monster except for an enchanted dragon-slaying arrow.
 Nobody has seen one of those in ages. It is said that the wizard kept one in
 his tower nearby... but he died a century ago. Others have tried to get into
 the building just to escape with reports of deadly traps and monsters. But
-there is no choice now, and face the dangers within if you are to slay the
+there is no choice now but face the dangers within if you are to slay the
 evil dragon. The time is running out and the path will certainly be filled
 with peril, it's not an accident that this place is called...
 
@@ -61,7 +61,8 @@ The game is played with the keyboard. You can use:
 This is a game heavily inspired in the roguelike/nethack genre, but trying to
 replace the complex interface into a more "choose your own adventure" multiple
 choice type of experience. The mechanics internally also draw shamelessly
-from D&D. I also added a time limit
+from D&D (there's a dragon! and a dungeon!). I also added a time limit as
+compared to those.
 
 There's of course a ton of extra content that I would have liked to add but
 there was no time. Hopefully you still find it fun!
