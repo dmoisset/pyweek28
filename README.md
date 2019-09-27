@@ -42,10 +42,16 @@ The game is played with the keyboard. You can use:
 
 See LICENSE file
 
-
+## LICENSE FOR OTHER RESOURCES
 
 Image credits:
- - door.png, hero.png, monster.png upstairs.png, downstairs.png:
-      https://www.patreon.com/posts/catch-all-heroes-24069135
-      Creative Commons — Attribution-NonCommercial-ShareAlike 4.0 International — CC BY-NC-SA 4.0
- - trap.png: https://pixabay.com/vectors/warning-sign-30915/
+
+ - Most graphical assets (unless specified otherwise) were all created
+   by https://www.patreon.com/forgottenadventures/ . They are great, you should sponsor them!
+   They are licensed under Creative Commons — Attribution-NonCommercial-ShareAlike 4.0 International — CC BY-NC-SA 4.0
+ - trap.png: Downloaded from https://pixabay.com/vectors/warning-sign-30915/ (license info available there)
+
+Music credits:
+
+ - All music tracks are by Kevin MacLeod, https://incompetech.com , distributed under:
+   CC BY (http://creativecommons.org/licenses/by/4.0/)
