@@ -28,16 +28,16 @@ Otherwise open a terminal / console and "cd" to the game directory and run:
 ## THE ADVENTURE BEGINS....
 
 No one could stop the dragon, and now he is ruling your beloved city. A
-seasoned adventurer like you know that he will get bored and devour everyone
-in a few days. But a seasoned adventurer likes you knows there is nothing
-that can harm the monster except for an enchanted dragon slaying arrow.
+seasoned adventurer like you knows that he will get bored and devour everyone
+in a few days. But a seasoned adventurer like you knows there is nothing
+that can harm the monster except for an enchanted dragon-slaying arrow.
 
 Nobody has seen one of those in ages. It is said that the wizard kept one in
 his tower nearby... but he died a century ago. Others have tried to get into
 the building just to escape with reports of deadly traps and monsters. But
 there is no choice know, and face the dangers within if you are to slay the
 evil dragon. The time is running out and the path will certainly be filled
-with peril, it's not an accident this place is called...
+with peril, it's not an accident that this place is called...
 
 THE SPIRE OF CHAOS
 
@@ -72,14 +72,17 @@ See LICENSE file
 
 ## LICENSE FOR OTHER RESOURCES
 
-Image credits:
+**Image credits:**
 
  - Most graphical assets (unless specified otherwise) were all created
    by https://www.patreon.com/forgottenadventures/ . They are great, you should sponsor them!
    They are licensed under Creative Commons — Attribution-NonCommercial-ShareAlike 4.0 International — CC BY-NC-SA 4.0
+ - sidebar.png is assembled also with assets from Forgotten adventures
  - trap.png: Downloaded from https://pixabay.com/vectors/warning-sign-30915/ (license info available there)
+ - the intro background is from https://commons.wikimedia.org/wiki/File:Durian_-_Sintel-wallpaper-dragon.jpg under
+   https://creativecommons.org/licenses/by/3.0/deed.en
 
-Music credits:
+**Music credits:**
 
  - All music tracks are by Kevin MacLeod, https://incompetech.com , distributed under:
    CC BY (http://creativecommons.org/licenses/by/4.0/)
