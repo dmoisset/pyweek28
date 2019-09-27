@@ -1,7 +1,8 @@
-from typing import Optional, Set, Tuple
+from typing import Optional, List, Set, Tuple
 
 import game
 import observer
+import treasure
 from world import World, Room
 
 
@@ -38,8 +39,9 @@ class Hero(observer.Observable):
 
     max_hit_points: int
     damage: int = 0
-
     resistances: Set["game.DamageType"]
+
+    inventory: List[treasure.Item]
 
     def __init__(self, world: World) -> None:
         super().__init__()
@@ -52,6 +54,8 @@ class Hero(observer.Observable):
         self.room = world.levels[0].entrance
         self.resistances = set()
         self.max_hit_points = 10  # FIXME: HP FORMULA BASED ON STATS!
+
+        self.inventory = []
 
     def stats(self) -> Tuple[Stat, ...]:
         return (self.strength, self.agility, self.health, self.awareness, self.power)
@@ -71,6 +75,9 @@ class Hero(observer.Observable):
             amount //= 2
         self.damage = min(self.max_hit_points, self.damage + amount)
 
+    def heal(self, amount: int) -> None:
+        self.damage = max(0, self.damage - amount)
+
     def enter(self, room: Room) -> None:
         assert room is not self.room
         self.previous_room = self.room
@@ -88,3 +95,6 @@ class Hero(observer.Observable):
     @property
     def y(self) -> int:
         return self.room.y
+
+    def clean_inventory(self) -> None:
+        self.inventory = [i for i in self.inventory if i.amount > 0]

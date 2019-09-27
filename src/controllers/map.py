@@ -70,6 +70,8 @@ class MapController:
             self.game.search()
         elif key == keys.R:
             self.game.rest()
+        elif key == keys.I:
+            self.game.inventory()
 
     def notify(self, obj: Observable, msg: Message) -> None:
         if "events" in msg:
@@ -80,7 +82,7 @@ class MapController:
             for i, menu in enumerate(events):
                 c: Controller
                 if not menu.entries:
-                    c = MessageController(f"{menu.title}\n{menu.subtitle}", offset=i)
+                    c = MessageController(menu.title, subtitle=menu.subtitle, offset=i)
                 else:
                     c = MenuController(menu, offset=i)
                 UI.push(c)

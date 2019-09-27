@@ -5,6 +5,7 @@ import hero
 from observer import Observable, Message
 from menu import Menu, MenuItem
 from world import World, Direction, Level
+import treasure
 from util import roll
 
 
@@ -323,7 +324,7 @@ class Game(Observable):
                 ),
                 MenuItem(
                     key="K_3",
-                    label="[3] Walk thorugh trap",
+                    label="[3] Walk through trap",
                     subtitle="Will trigger the trap, but you'll be able to walk past",
                     action=self.trigger_trap,
                 ),
@@ -354,3 +355,27 @@ class Game(Observable):
         self.time += REST_TIME
         self.hero.rest()
         self.add_message("Nothing like some sleep to feel better...")
+
+    def inventory(self) -> None:
+        entries = []
+        key = iter("ABCDEFGHJKLMNOPQRSTUVWXYZ")
+        for i in self.hero.inventory:
+            n = f"{i.amount}×" if i.amount != 1 else ""
+            if i.kind.from_inventory:
+                k = next(key)
+                entries.append(
+                    MenuItem(
+                        key=k,
+                        label=f"[{k}] {n}{i.kind.name}",
+                        subtitle=i.kind.from_inventory,
+                        action=lambda i=i: treasure.use_from_inventory(  # type: ignore
+                            self, i
+                        ),
+                    )
+                )
+            else:
+                entries.append(
+                    MenuItem(key="UNKNOWN", label=n + i.kind.name, action=lambda: None)
+                )
+        subtitle = "You have no items on yourself" if not self.hero.inventory else ""
+        self.add_menu(Menu(title="Inventory", subtitle=subtitle, entries=entries))
