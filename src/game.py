@@ -33,7 +33,7 @@ class Game(Observable):
     current_level: Level
 
     _time: int = 0
-    MAX_TIME: int = 1000
+    MAX_TIME: int = 24 * 12 * 7  # 7 Days time limit
 
     win: Optional[bool] = None  # True when win, False when lost
 
