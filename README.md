@@ -79,6 +79,8 @@ See LICENSE file
    They are licensed under Creative Commons — Attribution-NonCommercial-ShareAlike 4.0 International — CC BY-NC-SA 4.0
  - sidebar.png is assembled also with assets from Forgotten adventures
  - trap.png: Downloaded from https://pixabay.com/vectors/warning-sign-30915/ (license info available there)
+ - scroll.png: https://www.deviantart.com/saimgraphics/art/Scroll-PNG-371989314
+   Creative Commons Attribution 3.0 License
  - the intro background pictures are:
      - dragon from https://commons.wikimedia.org/wiki/File:Durian_-_Sintel-wallpaper-dragon.jpg under
        https://creativecommons.org/licenses/by/3.0/deed.en
