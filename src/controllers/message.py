@@ -12,8 +12,9 @@ BORDER_COLOR = "#7777aaff"
 
 
 class MessageController:
-    def __init__(self, text: str, offset: int = 0):
+    def __init__(self, text: str, subtitle: str = "", offset: int = 0):
         self.text = text
+        self.subtitle = subtitle
         self.layer = DIALOG_LAYER + offset
 
     def activate(self, scene: HUDScene) -> None:
@@ -28,6 +29,13 @@ class MessageController:
             fill=False,
         )
         layer.add_label(self.text, align="center", pos=(cx, cy + 10))
+        layer.add_label(
+            self.subtitle,
+            fontsize=14,
+            align="center",
+            pos=(cx, cy + 30),
+            color="#aaaaaa",
+        )
 
     def deactivate(self, scene: HUDScene) -> None:
         scene.hudlayers[self.layer].clear()
