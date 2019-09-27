@@ -30,9 +30,9 @@ class HeroView:
         )
 
 
-HP_METER_WIDTH = 150
+HP_METER_WIDTH = 110
 HP_METER_HEIGHT = 20
-HP_METER_POS = (100, 20)
+HP_METER_POS = (100, 115)
 
 HP_METER_LAYER = 0
 
@@ -50,7 +50,7 @@ class HitPointView:
             align="center",
             fontsize=HP_METER_HEIGHT * 0.7,
             pos=HP_METER_POS,
-            color="#5555aa",
+            color="#ffffff",
         )
         self.counter.y += HP_METER_HEIGHT * 0.3
         self.meter: Optional[polygons.Rect] = None
@@ -66,11 +66,11 @@ class HitPointView:
         ratio = pc.hit_points / pc.max_hit_points
         width = HP_METER_WIDTH * ratio
         if ratio <= 0.25:
-            color = (1.0, 0.0, 0.0)
+            color = (0.75, 0.0, 0.0)
         elif ratio <= 0.75:
-            color = (1, 2 * (ratio - 0.25), 0)
+            color = (0.75, 1.5 * (ratio - 0.25), 0)
         else:
-            color = ((1 - ratio) * 4, 1, 0)
+            color = ((1 - ratio) * 3, 0.75, 0)
         self.meter = self.below.add_rect(
             width=width,
             height=HP_METER_HEIGHT,

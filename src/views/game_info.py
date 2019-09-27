@@ -20,6 +20,7 @@ def convert_time(t: int) -> str:
 class GameInfoView:
     def __init__(self, scene: HUDScene, game: game.Game) -> None:
         self.scene = scene
+        scene.hudlayers[0].add_sprite("sidebar", pos=(100, 350))
         self.time_label = scene.hudlayers[1].add_label(
             "<Time>", pos=(30, SCREEN_HEIGHT - 50)
         )
