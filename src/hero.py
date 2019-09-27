@@ -1,4 +1,4 @@
-from typing import Optional, List, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 import game
 import observer
@@ -42,6 +42,7 @@ class Hero(observer.Observable):
     resistances: Set["game.DamageType"]
 
     inventory: List[treasure.Item]
+    worn: Dict[treasure.ItemSlot, treasure.Item]
 
     def __init__(self, world: World) -> None:
         super().__init__()
@@ -56,6 +57,7 @@ class Hero(observer.Observable):
         self.max_hit_points = 10  # FIXME: HP FORMULA BASED ON STATS!
 
         self.inventory = []
+        self.worn = {}
 
     def stats(self) -> Tuple[Stat, ...]:
         return (self.strength, self.agility, self.health, self.awareness, self.power)
@@ -96,5 +98,39 @@ class Hero(observer.Observable):
     def y(self) -> int:
         return self.room.y
 
+    def check_pick_up(self) -> Optional[treasure.Item]:
+        item = self.room.loot
+        if item.kind.slot != treasure.ItemSlot.NONE:
+            return self.worn.get(item.kind.slot, None)
+        else:
+            return None
+
+    def pick_up(self) -> None:
+        """add `item` from current room to inventory. May drop another"""
+        item = self.room.loot
+        self.inventory.append(item)
+        self.room.loot = None
+        if item.kind.slot != treasure.ItemSlot.NONE:
+            # Drop item in slot
+            dropped = self.worn.get(item.kind.slot, None)
+            self.worn[item.kind.slot] = item
+            if dropped:
+                self.inventory.remove(dropped)
+                self.room.loot = dropped
+        self.clean_inventory()
+
     def clean_inventory(self) -> None:
-        self.inventory = [i for i in self.inventory if i.amount > 0]
+        # Remove expended items
+        new_inventory = [i for i in self.inventory if i.amount > 0]
+        # Sort in inventory order (grouping similar stuff together)
+        new_inventory.sort(key=treasure.item_sort)
+        # Merge stacks of identical items
+        i = 0
+        while i < len(new_inventory) - 1:
+            if new_inventory[i].kind == new_inventory[i + 1].kind:
+                new_inventory[i].amount += new_inventory[i + 1].amount
+                del new_inventory[i + 1]
+            else:
+                i += 1
+        # Update
+        self.inventory = new_inventory

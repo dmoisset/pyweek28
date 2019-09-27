@@ -121,6 +121,8 @@ class Game(Observable):
             self.visit_door(**kwargs)
         elif room.trap:
             self.visit_trap(**kwargs)
+        elif room.loot:
+            self.visit_treasure()
 
     def visit_entrance(self) -> None:
         below = self.world.level_below(self.current_level)
@@ -337,6 +339,34 @@ class Game(Observable):
                     cancel=self.hero.retreat,
                 )
             )
+
+    def visit_treasure(self):
+        assert self.hero.room.loot
+
+        item = self.hero.room.loot
+
+        drop = self.hero.check_pick_up()
+        if drop:
+            subtitle = f"You will have to drop your {drop.kind.name}"
+        else:
+            subtitle = ""
+
+        entries = [
+            MenuItem(
+                key="K_1",
+                label="[1] Pick it up",
+                subtitle=subtitle,
+                action=self.hero.pick_up,
+            ),
+            MenuItem(key="K_2", label="[2] Leave it", action=lambda: None),
+        ]
+        self.add_menu(
+            Menu(
+                title=f"There is a {item.kind.name} here",
+                subtitle=item.kind.description,
+                entries=entries,
+            )
+        )
 
     def look(self) -> None:
         """Mark as seen rooms that are within line of sight"""

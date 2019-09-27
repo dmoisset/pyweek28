@@ -4,6 +4,7 @@ from typing import Dict, List, Optional
 
 import game
 import observer
+import treasure
 
 DOOR_TRAP_PROBABILITY = 0.6
 
@@ -61,7 +62,7 @@ class Monster:
 
 class Room(observer.Observable):
 
-    OBSERVABLE_FIELDS = {"seen", "trap", "door", "monster"}
+    OBSERVABLE_FIELDS = {"seen", "trap", "door", "monster", "loot"}
 
     level: "Level"
     x: int
@@ -78,6 +79,9 @@ class Room(observer.Observable):
 
     # Monsters
     monster: Optional[Monster] = None  # None means no monster
+
+    # Treasure
+    loot: Optional[treasure.Item] = None
 
     seen: bool = False
 
@@ -196,8 +200,10 @@ class Level:
                     pass
                 elif terrain == "^":  # Standalone Trap
                     room.trap = Trap()
-                elif terrain == "M":
+                elif terrain == "M":  # Monster
                     room.monster = Monster()
+                elif terrain == "$":  # Random treasure
+                    room.loot = treasure.Item.random()
                 else:
                     raise ValueError(
                         f"line {ry+1} char {rx+1}: unknown room type {terrain!r}"

@@ -1,6 +1,8 @@
 import math
+from typing import Optional
 
 from wasabi2d import Scene
+from wasabi2d.sprites import Sprite
 
 import observer
 from views.layer_ids import FLOOR_LAYER
@@ -14,10 +16,13 @@ class RoomView:
     def __init__(self, scene: Scene, room: world.Room) -> None:
         floor = scene.layers[FLOOR_LAYER]
         self.room = room
+        # Base floor
         self.floor = floor.add_rect(
             width=ROOM_SIZE, height=ROOM_SIZE, fill=True, color=self.FLOOR_COLOR[0]
         )
         self.floor.pos = (room.x * ROOM_SPACING, room.y * ROOM_SPACING)
+
+        # Doorways (only east and south... north and west are drawn by the other room)
         self.east_doorway = self.south_doorway = None
         if world.Direction.EAST in room.neighbors:
             self.east_doorway = floor.add_rect(
@@ -64,6 +69,9 @@ class RoomView:
         self.monster = floor.add_sprite("monster", pos=self.floor.pos)
         self.monster.scale = 0.15
 
+        # Treasure: this is created/destroyed in the notify function
+        self.treasure: Optional[Sprite] = None
+
         # Initial update
         self.notify(room, {})
         room.register(self)
@@ -103,6 +111,16 @@ class RoomView:
         )
         # Show monster if present
         self.monster.color = (1, 1, 1, int(room.seen and room.monster is not None))
+        # Add treasure if present
+        visible_treasure = room.seen and room.loot is not None
+        if visible_treasure and self.treasure is None:
+            layer = self.floor.layer
+            self.treasure = layer.add_sprite("treasure", pos=self.floor.pos)
+            self.treasure.scale = 0.25
+            self.treasure.angle = 0.78
+        if self.treasure is not None and not visible_treasure:
+            self.treasure.delete()
+            self.treasure = None
 
     def release(self) -> None:
         room = self.room
