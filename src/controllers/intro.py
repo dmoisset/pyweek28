@@ -1,4 +1,4 @@
-from wasabi2d import keys, keymods
+from wasabi2d import keys, keymods, music
 
 from controllers.map import MapController
 from hudscene import HUDScene
@@ -41,6 +41,8 @@ intro_pos_y = [200, 240, 240, 350]
 class IntroController:
     def __init__(self, stage: int = 0) -> None:
         self.stage = stage
+        if stage == 0:
+            music.play_once("intro")
 
     def activate(self, scene: HUDScene) -> None:
         size = 20

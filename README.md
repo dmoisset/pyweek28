@@ -88,11 +88,13 @@ See LICENSE file
    Creative Commons Attribution 3.0 License
  - all the treasure icons are from https://www.hiclipart.com ; they state that: "all PNG cliparts in PNGGuru are for
    Non-Commercial Use, no attribution required"
- - the intro background pictures are:
+ - the intro/outro background pictures are:
      - dragon from https://commons.wikimedia.org/wiki/File:Durian_-_Sintel-wallpaper-dragon.jpg under
        https://creativecommons.org/licenses/by/3.0/deed.en
      - tower image is a 1832 Thomas Cole painting, under public domain:
        https://commons.wikimedia.org/wiki/File:Cole_Thomas_Romantic_Landscape_with_Ruined_Tower_1832-36.jpg
+     - barren landscape from https://www.deviantart.com/highdarktemplar/art/Desolation-63289461
+       Creative Commons Attribution-Noncommercial-No Derivative Works 3.0 License
 
 **Music credits:**
 
@@ -107,6 +109,10 @@ Music downloaded from https://filmmusic.io:
  - "Crossing the Chasm" by Kevin MacLeod (https://incompetech.com)
  - "Volatile Reaction" by Kevin MacLeod (https://incompetech.com)
  - "Five Armies" by Kevin MacLeod (https://incompetech.com)
+ - "Virtutes Instrumenti" by Kevin MacLeod (https://incompetech.com)
+ - "Americana" by Kevin MacLeod (https://incompetech.com)
+ - "Dark Times" by Kevin MacLeod (https://incompetech.com)
+
 
 **Sound FX credits:**
 
