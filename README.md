@@ -88,6 +88,8 @@ See LICENSE file
  - trap.png: Downloaded from https://pixabay.com/vectors/warning-sign-30915/ (license info available there)
  - scroll.png: https://www.deviantart.com/saimgraphics/art/Scroll-PNG-371989314
    Creative Commons Attribution 3.0 License
+ - all the treasure icons are from https://www.hiclipart.com ; they state that: "all PNG cliparts in PNGGuru are for
+   Non-Commercial Use, no attribution required"
  - the intro background pictures are:
      - dragon from https://commons.wikimedia.org/wiki/File:Durian_-_Sintel-wallpaper-dragon.jpg under
        https://creativecommons.org/licenses/by/3.0/deed.en
