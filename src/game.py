@@ -171,8 +171,9 @@ class Game(Observable):
             if increases_left:
                 self.add_menu(
                     Menu(
-                        title=f"You have gained {diff} level{'' if diff == 1 else 's'}!",
-                        subtitle=f"You can increase {increases_left} of your abilities",
+                        title=f"You still have {increases_left} ability "
+                        f"increase{'s'*(increases_left != 1)}",
+                        subtitle=f"You can increase the same ability multiple times",
                         entries=entries,
                     )
                 )
