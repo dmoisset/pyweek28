@@ -115,9 +115,8 @@ class RoomView:
         visible_treasure = room.seen and room.loot is not None
         if visible_treasure and self.treasure is None:
             layer = self.floor.layer
-            self.treasure = layer.add_sprite("treasure", pos=self.floor.pos)
-            self.treasure.scale = 0.25
-            self.treasure.angle = 0.78
+            self.treasure = layer.add_sprite(room.loot.kind.id, pos=self.floor.pos)
+            self.treasure.scale = 0.8
         if self.treasure is not None and not visible_treasure:
             self.treasure.delete()
             self.treasure = None

@@ -25,21 +25,21 @@ class ItemKind:
 
 KINDS = [
     ItemKind(
-        "pot",
+        "pot_heal",
         name="Healing Potion",
         description="Increases your current hit points",
         from_inventory="Takes away some of your damage",
     ),
     ItemKind(
-        "key.wood",
+        "key_wood",
         name="Wooden Key",
         description="Automatically opens wooden doors",
         frequency=3,
     ),
     ItemKind(
-        "boots.escape",
+        "boots_escape",
         name="Boots of Escaping",
-        description="Improves your chances of escaping a monster by 20%",
+        description="Improves your chances of escaping a monster by 25%",
         frequency=1,
         slot=ItemSlot.BOOTS,
     ),
@@ -80,7 +80,7 @@ def use_from_inventory(g: "game.Game", item: Item) -> None:
     assert item.amount > 0
     assert item in g.hero.inventory
 
-    if item.kind.id == "pot":
+    if item.kind.id == "pot_heal":
         g.hero.heal(5)
         item.amount -= 1
     else:
@@ -97,7 +97,7 @@ class Option(NamedTuple):
 
 def door_options(g: "game.Game", item: Item) -> Iterable[Option]:
     assert g.hero.room.door is not None
-    if item.kind.id == "key.wood":
+    if item.kind.id == "key_wood":
         yield Option(
             "Unlock with your wooden key",
             "This discards the key but ensures the door is opened. Triggers traps.",
@@ -107,7 +107,7 @@ def door_options(g: "game.Game", item: Item) -> Iterable[Option]:
 
 def monster_options(g: "game.Game", item: Item) -> Iterable[Option]:
     assert g.hero.room.monster is not None
-    if item.kind.id == "boots.escape":
+    if item.kind.id == "boots_escape":
         yield Option(
             "Run with your boots",
             "Increases escape chance by 25%",
