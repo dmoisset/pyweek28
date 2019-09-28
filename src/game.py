@@ -304,7 +304,6 @@ class Game(Observable):
             else:
                 self.add_message("You defeat the monster!")
         else:
-            self.add_message("The monster hits you before being defeated!")
             monster.attack(self)
         self.hero.room.monster = None
 
@@ -314,7 +313,6 @@ class Game(Observable):
         self.time += ESCAPE_TIME
         check = self.hero.agility.bonus + roll() + bonus
         if check < monster.escape_dc:
-            self.add_message("The monster hits you as you retreat!")
             monster.attack(self)
         self.hero.retreat()
 

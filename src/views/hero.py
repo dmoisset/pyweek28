@@ -1,3 +1,4 @@
+import math
 from typing import cast, Optional
 
 from wasabi2d import animate
@@ -20,10 +21,11 @@ class HeroView:
         self.sprite = scene.layers[HERO_LAYER].add_sprite("hero")
         self.sprite.scale = 0.18
         self.hurt = scene.hudlayers[HURT_LAYER].add_particle_group(
-            texture="explode", max_age=0.5
+            texture="hurt", max_age=1
         )
-        self.hurt.add_color_stop(0, (1, 1, 0, 1))
-        self.hurt.add_color_stop(0.5, (1, 1, 0, 0))
+        for i in range(11):
+            self.hurt.add_color_stop(i * 0.1, (1, 1, 1, i % 2))
+
         self.prev_damage = hero.damage
         self.notify(hero, {})
         hero.register(self)
@@ -35,7 +37,11 @@ class HeroView:
         animate(self.scene.camera, duration=0.2, pos=target)
         if pc.damage > self.prev_damage:
             self.hurt.emit(
-                50, pos=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), vel_spread=60, size=8
+                1,
+                pos=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2),
+                vel_spread=5,
+                size=30,
+                angle=math.pi,
             )
         self.prev_damage = pc.damage
 
