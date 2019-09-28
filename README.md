@@ -13,15 +13,13 @@ The game was built on python 3.7, should work on python 3.6
 You will need to pip install some of these before running the game:
 
  - wasabi2d: The latest release as of today has some bugs fixed in master.
-   please install it with `pip install git+https://github.com/lordmauve/wasabi2d.git@669e0072`.
-   Requires also having git in your system
+   please install it with `pip install git+https://github.com/lordmauve/wasabi2d.git@d919443`.
+   Requires also having git in your system. May be fixed in the published package
+   by the time you try it
  - `pip install typing_extensions` 
  - `pip install dataclasses` (only if you use python 3.6)
 
-I have tried this on Linux and on Windows
-
-Unfortunately, it won't run on OS X; wasabi2d requires OpenGL 4.3 and Apple
-only supports OpenGL 4.1
+I have tried this on Linux, Windows, and OS X
 
 ## RUNNING THE GAME
 
