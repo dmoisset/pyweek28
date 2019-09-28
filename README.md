@@ -1,8 +1,10 @@
 # Spire of Chaos
 
 Entry in PyWeek #28  <http://www.pyweek.org/28/>
-Team: Chaotic Elven Wizard
-Members: Darni
+
+**Team:** Chaotic Elven Wizard
+
+**Members:** Darni
 
 ## DEPENDENCIES
 
@@ -11,20 +13,19 @@ The game was built on python 3.7, should work on python 3.6
 You will need to pip install some of these before running the game:
 
  - wasabi2d: The latest release as of today has some bugs fixed in master.
-   please install it with `git+https://github.com/lordmauve/wasabi2d.git@669e0072`
- - typing_extensions
- - dataclasses (only if you use python 3.6)
+   please install it with `pip install git+https://github.com/lordmauve/wasabi2d.git@669e0072`.
+   Requires also having git in your system
+ - `pip install typing_extensions` 
+ - `pip install dataclasses` (only if you use python 3.6)
 
-I have tried this on Linux on Windows
+I have tried this on Linux and on Windows
 
 Unfortunately, it won't run on OS X; wasabi2d requires OpenGL 4.3 and Apple
 only supports OpenGL 4.1
 
 ## RUNNING THE GAME
 
-On Windows or Mac OS X, locate the "run_game.pyw" file and double-click it.
-
-Otherwise open a terminal / console and "cd" to the game directory and run:
+Open a terminal / command line and "cd" to the game directory and run:
 
 ```
   python run_game.py
