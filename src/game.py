@@ -1,6 +1,6 @@
 from enum import Enum
 import random
-from typing import List, Optional
+from typing import Iterator, List, Optional
 
 import hero
 from observer import Observable, Message
@@ -16,13 +16,27 @@ class DamageType(Enum):
     PHYSICAL = "physical"
 
 
+class MenuID(Enum):
+    DOOR = "door"
+    MONSTER = "monster"
+    TRAP = "trap"
+
+
 SEARCH_TIME = 1
 MOVE_TIME = 1
-BREAK_TIME = 2
+BREAK_TIME = 3
+UNLOCK_TIME = 1
 FIGHT_TIME = 2
 ESCAPE_TIME = 1
 DISARM_TIME = 4
 REST_TIME = 96
+
+
+def key_iterator() -> Iterator[str]:
+    """Return an iterable on optional keys"""
+    return iter(
+        "ABCDEFGHJKLMNOPQRSTUVWXYZ"
+    )  # 'I' skipped for people coming from inventory
 
 
 class Game(Observable):
@@ -92,6 +106,23 @@ class Game(Observable):
             nr.reveal_hidden(check)
         self.look()
 
+    def extend(self, entries: List[MenuItem], menu: MenuID) -> None:
+        """Add item options"""
+        shortcut = key_iterator()
+        # Extend with inventory items
+        for item in self.hero.inventory:
+            if menu == MenuID.DOOR:
+                options = treasure.door_options(self, item)
+            else:
+                options = ()
+            for t, st, a in options:
+                k = next(shortcut)
+                entries.append(
+                    MenuItem(
+                        key=k, label=f"[{k}] {t}", subtitle=st, action=a, color="green"
+                    )
+                )
+
     def move(self, direction: Direction) -> None:
         self.time += MOVE_TIME
         room = self.hero.room
@@ -124,6 +155,8 @@ class Game(Observable):
             self.visit_trap(**kwargs)
         elif room.loot:
             self.visit_treasure()
+
+    # Stairs
 
     def visit_entrance(self) -> None:
         below = self.world.level_below(self.current_level)
@@ -171,6 +204,8 @@ class Game(Observable):
         self.current_level = new_level
         self.hero.room = new_level.entrance if enter else new_level.exit
         self.look()
+
+    # Monsters
 
     def monster_encounter(self) -> None:
         assert self.hero.room.monster
@@ -222,51 +257,22 @@ class Game(Observable):
             )
         )
 
+    # Doors
+
     def visit_door(self, title: str = "There is a door here") -> None:
-        def break_door() -> None:
-            self.time += BREAK_TIME
-            check = self.hero.strength.bonus + roll()
-            assert self.hero.room.door
-            if check >= self.hero.room.door.break_dc:
-                self.hero.room.door = None
-                if self.hero.room.trap:
-                    self.trigger_trap(
-                        "As the door breaks, a trap within it is triggered!"
-                    )
-                    # The trap is destroyed with the door
-                    self.hero.room.trap = None
-                else:
-                    self.add_message("Crash! the door opens!")
-            else:
-                if self.hero.room.trap:
-                    self.trigger_trap("The door was trapped! you triggered it!")
-                    self.visit_door("...and the (trapped) door resists")
-                else:
-                    self.visit_door("WHAAAM! The door resists...")
-            self.look()
-
-        def search_traps() -> None:
-            self.time += SEARCH_TIME
-            check = self.hero.awareness.bonus + roll()
-            self.hero.room.reveal_traps(check)
-            # TODO: give feedback if something happened/didn't happen
-            self.look()
-            if self.hero.room.trap is None or self.hero.room.trap.hide_dc > 0:
-                self.visit_room(title="Doesn't seem to be trapped...")
-            else:
-                self.visit_room(title="It's a trap!")
-
         entries = [
             MenuItem(
                 key="K_1",
                 label="[1] Break it",
                 subtitle="If the door is trapped, this will trigger the trap",
-                action=break_door,
+                action=self.break_door,
             )
         ]
         if self.hero.room.trap is None or self.hero.room.trap.hide_dc > 0:
             entries.append(
-                MenuItem(key="K_2", label="[2] Check it for traps", action=search_traps)
+                MenuItem(
+                    key="K_2", label="[2] Check it for traps", action=self.search_traps
+                )
             )
         else:
             entries.append(
@@ -280,6 +286,7 @@ class Game(Observable):
         entries.append(
             MenuItem(key="K_3", label="[3] Leave it alone", action=self.hero.retreat)
         )
+        self.extend(entries, MenuID.DOOR)
         self.add_menu(
             Menu(
                 title=title,
@@ -288,6 +295,52 @@ class Game(Observable):
                 cancel=self.hero.retreat,
             )
         )
+
+    def break_door(self) -> None:
+        self.time += BREAK_TIME
+        check = self.hero.strength.bonus + roll()
+        assert self.hero.room.door
+        if check >= self.hero.room.door.break_dc:
+            self.hero.room.door = None
+            if self.hero.room.trap:
+                self.trigger_trap("As the door breaks, a trap within it is triggered!")
+                # The trap is destroyed with the door
+                self.hero.room.trap = None
+            else:
+                self.add_message("Crash! the door opens!")
+        else:
+            if self.hero.room.trap:
+                self.trigger_trap("The door was trapped! you triggered it!")
+                self.visit_door("...and the (trapped) door resists")
+            else:
+                self.visit_door("WHAAAM! The door resists...")
+        self.look()
+
+    def unlock_door(self, key: treasure.Item) -> None:
+        self.time += UNLOCK_TIME
+        self.hero.room.door = None
+        if self.hero.room.trap:
+            self.trigger_trap("As the door unlocks, a trap within it is triggered!")
+            # The trap is destroyed with the door
+            self.hero.room.trap = None
+        else:
+            self.add_message("Click! the door opens!")
+        key.amount -= 1
+        self.hero.clean_inventory()
+        self.look()
+
+    def search_traps(self) -> None:
+        """Search for traps within door"""
+        self.time += SEARCH_TIME
+        check = self.hero.awareness.bonus + roll()
+        self.hero.room.reveal_traps(check)
+        self.look()
+        if self.hero.room.trap is None or self.hero.room.trap.hide_dc > 0:
+            self.visit_room(title="Doesn't seem to be trapped...")
+        else:
+            self.visit_room(title="It's a trap!")
+
+    # Traps
 
     def disarm_trap(self) -> None:
         assert self.hero.room.trap
@@ -345,6 +398,8 @@ class Game(Observable):
                 )
             )
 
+    # Loot
+
     def visit_treasure(self, title: str = "There is a {} here") -> None:
         assert self.hero.room.loot
 
@@ -373,6 +428,8 @@ class Game(Observable):
             )
         )
 
+    # Other actions
+
     def look(self) -> None:
         """Mark as seen rooms that are within line of sight"""
         start = self.hero.room
@@ -393,7 +450,7 @@ class Game(Observable):
 
     def inventory(self) -> None:
         entries = []
-        key = iter("ABCDEFGHJKLMNOPQRSTUVWXYZ")
+        key = key_iterator()
         for i in self.hero.inventory:
             n = f"{i.amount}×" if i.amount != 1 else ""
             if i.kind.from_inventory:

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Tuple
+from typing import Callable, Iterable, List, Tuple, NamedTuple
 import random
 
 import game
@@ -86,3 +86,20 @@ def use_from_inventory(g: "game.Game", item: Item) -> None:
     else:
         raise ValueError(f"Item kind [{item.kind.id}] not implemented yet!")
     g.hero.clean_inventory()
+
+
+# Item abilities
+class Option(NamedTuple):
+    title: str
+    subtitle: str
+    action: Callable[[], None]
+
+
+def door_options(g: "game.Game", item: Item) -> Iterable[Option]:
+    assert g.hero.room.door is not None
+    if item.kind.id == "key.wood":
+        yield Option(
+            "Unlock with your wooden key",
+            "This discards the key but ensures the door is opened. Triggers traps.",
+            action=lambda: g.unlock_door(item),
+        )
