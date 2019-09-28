@@ -1,6 +1,7 @@
 from typing import List
 
 from wasabi2d import keys, keymods
+from wasabi2d import music
 
 from controllers.message import MessageController
 from controllers.menu import MenuController
@@ -43,6 +44,16 @@ class MapController:
             for n in room.neighbors.values():
                 if n not in shown_rooms:
                     pending_rooms.append(n)
+        # Play level music
+        try:
+            music.play(
+                "level"
+                + str(self.game.world.level_number(self.game.hero.room.level) + 1)
+            )
+        except Exception:
+            # If music doesn't work, don't worry too much
+            print("Can not play music!")
+            pass
 
     def clear_map(self) -> None:
         for rv in self.rooms:
