@@ -5,6 +5,7 @@ from typing import Dict, List, Optional
 import game
 import observer
 import treasure
+from trap import Trap
 
 DOOR_TRAP_PROBABILITY = 0.6
 
@@ -33,14 +34,6 @@ class Door(observer.Observable):
     kind: DoorKind
     hide_dc: int = 0  # Difficulty of finding if hidden. 0 if found or not hidden
     break_dc: int = 12
-
-    def reveal(self) -> None:
-        self.hide_dc = 0
-
-
-class Trap:
-    hide_dc: int = 12  # Difficulty of finding if hidden. 0 if found or not hidden
-    disarm_dc: int = 15
 
     def reveal(self) -> None:
         self.hide_dc = 0

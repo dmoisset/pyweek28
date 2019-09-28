@@ -371,14 +371,14 @@ class Game(Observable):
         if check >= self.hero.room.door.break_dc:
             self.hero.room.door = None
             if self.hero.room.trap:
-                self.trigger_trap("As the door breaks, a trap within it is triggered!")
+                self.trigger_trap("As the door breaks, a {} is triggered!")
                 # The trap is destroyed with the door
                 self.hero.room.trap = None
             else:
                 self.add_message("Crash! the door opens!")
         else:
             if self.hero.room.trap:
-                self.trigger_trap("The door was trapped! you triggered it!")
+                self.trigger_trap("The door was trapped! you triggered a {}!")
                 self.visit_door("...and the (trapped) door resists")
             else:
                 self.visit_door("WHAAAM! The door resists...")
@@ -426,18 +426,18 @@ class Game(Observable):
         elif check >= trap.disarm_dc // 2:
             self.visit_room(title="This seems difficult to disarm...")
         else:
-            self.trigger_trap("You triggered the trap trying to disarm it!")
+            self.trigger_trap("You triggered the {} trying to disarm it!")
             self.visit_room()
 
-    def trigger_trap(self, title: str = "You stepped on a trap!") -> None:
+    def trigger_trap(self, title: str = "You stepped on a {}!") -> None:
         assert self.hero.room.trap
 
         trap = self.hero.room.trap
-        self.add_message(title)
+        self.add_message(title.format(trap.name), subtitle=trap.description(self))
         trap.reveal()
-        self.hero.take_damage(1, DamageType.PHYSICAL)
+        trap.trigger(self)  # Apply damage / effect
 
-    def visit_trap(self, title: str = "You get carefully closer to the trap") -> None:
+    def visit_trap(self, title: str = "You get carefully closer to the {}") -> None:
         assert self.hero.room.trap
 
         trap = self.hero.room.trap
@@ -461,7 +461,7 @@ class Game(Observable):
             ]
             self.add_menu(
                 Menu(
-                    title=title,
+                    title=title.format(trap.name),
                     subtitle="What next?",
                     entries=entries,
                     cancel=self.hero.retreat,

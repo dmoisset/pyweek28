@@ -152,5 +152,9 @@ class Hero(observer.Observable):
                 del new_inventory[i + 1]
             else:
                 i += 1
+        # Remove worn stuff which is not in inventory
+        for slot in list(self.worn.keys()):
+            if self.worn[slot] not in new_inventory:
+                del self.worn[slot]
         # Update
         self.inventory = new_inventory
