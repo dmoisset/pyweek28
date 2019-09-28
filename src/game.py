@@ -137,7 +137,6 @@ class Game(Observable):
             if not new_room.visible:
                 # Hidden door; not moving
                 return
-            # TODO: handle traps, monster, etc etc
             self.hero.enter(new_room)
             self.look()
             self.visit_room()
