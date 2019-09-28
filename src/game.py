@@ -107,12 +107,14 @@ class Game(Observable):
         self.look()
 
     def extend(self, entries: List[MenuItem], menu: MenuID) -> None:
-        """Add item options"""
+        """Add extra options"""
         shortcut = key_iterator()
         # Extend with inventory items
         for item in self.hero.inventory:
             if menu == MenuID.DOOR:
                 options = treasure.door_options(self, item)
+            elif menu == MenuID.MONSTER:
+                options = treasure.monster_options(self, item)
             else:
                 options = ()
             for t, st, a in options:
@@ -224,14 +226,6 @@ class Game(Observable):
                 monster.attack(self)
             self.hero.room.monster = None
 
-        def escape() -> None:
-            self.time += ESCAPE_TIME
-            check = self.hero.agility.bonus + roll()
-            if check < monster.escape_dc:
-                self.add_message("The monster hits you as you retreat!")
-                monster.attack(self)
-            self.hero.retreat()
-
         monster = self.hero.room.monster
 
         entries = [
@@ -245,17 +239,28 @@ class Game(Observable):
                 key="K_2",
                 label="[2] Try to escape",
                 subtitle="You retreat, but the monster may hurt you.",
-                action=escape,
+                action=self.escape,
             ),
         ]
+        self.extend(entries, MenuID.MONSTER)
         self.add_menu(
             Menu(
                 title="There is a monster here!",
                 subtitle="What next?",
                 entries=entries,
-                cancel=escape,
+                cancel=self.escape,
             )
         )
+
+    def escape(self, bonus=0) -> None:
+        assert self.hero.room.monster
+        monster = self.hero.room.monster
+        self.time += ESCAPE_TIME
+        check = self.hero.agility.bonus + roll() + bonus
+        if check < monster.escape_dc:
+            self.add_message("The monster hits you as you retreat!")
+            monster.attack(self)
+        self.hero.retreat()
 
     # Doors
 

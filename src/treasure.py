@@ -18,7 +18,7 @@ class ItemKind:
     id: str
     name: str
     description: str
-    frequency: int = 4  # 4 is very common, 1 is rarest
+    frequency: int = 5  # 5 is very common, 1 is rarest
     slot: ItemSlot = ItemSlot.NONE
     from_inventory: str = ""
 
@@ -40,7 +40,7 @@ KINDS = [
         "boots.escape",
         name="Boots of Escaping",
         description="Improves your chances of escaping a monster by 20%",
-        frequency=2,
+        frequency=1,
         slot=ItemSlot.BOOTS,
     ),
 ]
@@ -102,4 +102,14 @@ def door_options(g: "game.Game", item: Item) -> Iterable[Option]:
             "Unlock with your wooden key",
             "This discards the key but ensures the door is opened. Triggers traps.",
             action=lambda: g.unlock_door(item),
+        )
+
+
+def monster_options(g: "game.Game", item: Item) -> Iterable[Option]:
+    assert g.hero.room.monster is not None
+    if item.kind.id == "boots.escape":
+        yield Option(
+            "Run with your boots",
+            "Increases escape chance by 25%",
+            action=lambda: g.escape(+5),
         )
