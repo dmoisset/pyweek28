@@ -2,6 +2,8 @@ from enum import Enum
 import random
 from typing import Iterator, List, Optional
 
+from wasabi2d import sounds, music
+
 import hero
 from observer import Observable, Message
 from menu import Menu, MenuItem
@@ -253,6 +255,11 @@ class Game(Observable):
             )
         else:
             self.add_message("You reach the top of the tower!")
+            self.add_message("You find the enchanted arrow...")
+            self.add_message("With that, you quickly dispatch the evil dragon")
+
+            music.pause()
+            sounds.win.play()
             self.win = True
 
     def go_to_level(self, new_level: Level, enter: bool) -> None:
@@ -298,12 +305,17 @@ class Game(Observable):
         self.time += FIGHT_TIME
         check = self.hero.strength.bonus + roll() + bonus
         if check >= monster.ac:
+            if bonus == 0:  # FIXME: this shouldn't know about the boots
+                sounds.fight.play()
+            else:
+                sounds.kungfu.play()
             if random.random() <= monster.drop_rate:
                 self.hero.room.loot = treasure.Item.random()
                 self.visit_treasure("The monster dies and drops a {}")
             else:
                 self.add_message("You defeat the monster!")
         else:
+            sounds.roar.play()
             monster.attack(self)
         self.hero.room.monster = None
 
@@ -359,6 +371,7 @@ class Game(Observable):
         self.time += BREAK_TIME
         check = self.hero.strength.bonus + roll() + bonus
         assert self.hero.room.door
+        sounds.force.play()
         if check >= self.hero.room.door.break_dc:
             self.hero.room.door = None
             if self.hero.room.trap:
@@ -378,6 +391,7 @@ class Game(Observable):
     def unlock_door(self, key: treasure.Item) -> None:
         self.time += UNLOCK_TIME
         self.hero.room.door = None
+        sounds.unlock.play()
         if self.hero.room.trap:
             self.trigger_trap("As the door unlocks, a trap within it is triggered!")
             # The trap is destroyed with the door
@@ -412,6 +426,7 @@ class Game(Observable):
             self.add_message("You disarm it!")
             self.hero.room.trap = None
             self.visit_room()
+            sounds.disarm.play()
         elif check >= trap.disarm_dc // 2:
             self.visit_room(title="This seems difficult to disarm...")
         else:

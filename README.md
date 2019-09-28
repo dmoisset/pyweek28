@@ -96,10 +96,10 @@ See LICENSE file
 
 **Music credits:**
 
- - All music tracks are by Kevin MacLeod, https://incompetech.com , distributed
-   under CC-BY (http://creativecommons.org/licenses/by/4.0/)
+All music tracks are by Kevin MacLeod, https://incompetech.com , distributed
+under CC-BY (http://creativecommons.org/licenses/by/4.0/)
 
-Music from https://filmmusic.io:
+Music downloaded from https://filmmusic.io:
 
  - "Serpentine Trek" by Kevin MacLeod (https://incompetech.com)
  - "Anguish" by Kevin MacLeod (https://incompetech.com)
@@ -107,3 +107,15 @@ Music from https://filmmusic.io:
  - "Crossing the Chasm" by Kevin MacLeod (https://incompetech.com)
  - "Volatile Reaction" by Kevin MacLeod (https://incompetech.com)
  - "Five Armies" by Kevin MacLeod (https://incompetech.com)
+
+**Sound FX credits:**
+
+All sound effects licensed under CC-0, downloaded from https://freesound.org/
+
+ - https://freesound.org/people/FunWithSound/sounds/456966/
+ - https://freesound.org/people/sKydran/sounds/131438/
+ - https://freesound.org/people/kyles/sounds/450793/
+ - https://freesound.org/people/vacuumfan7072/sounds/266153/
+ - https://freesound.org/people/quadraslayer/sounds/398908/
+ - https://freesound.org/people/florianreichelt/sounds/460509/
+ - https://freesound.org/people/oldedgar/sounds/97977/
