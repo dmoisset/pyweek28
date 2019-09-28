@@ -138,7 +138,7 @@ class Room(observer.Observable):
 
 def _inside(room: Room, d: Direction, width: int, height: int) -> bool:
     rx, ry = room.x, room.y
-    dx, dy = d.value
+    dx, dy = d.value  # type: int, int
     return (0 <= rx + dx < width) and (0 <= ry + dy < height)
 
 
@@ -225,7 +225,7 @@ class Level:
         LOOT_DENSITY = 0.1  # Ratio of free locations made treasure
 
         # 0. Create grid
-        self = object.__new__(cls)
+        self: Level = object.__new__(cls)
         grid = [[Room(self, x, y) for x in range(width)] for y in range(height)]
         self.entrance = grid[0][0]
         self.exit = grid[height - 1][width - 1]
@@ -257,7 +257,7 @@ class Level:
                 frontier.pop()
 
         # 2. Break down more walls to open it up a bit
-        rooms = sum(grid, [])
+        rooms: List[Room] = sum(grid, [])
         for _ in range(int(width * height * OPENNESS)):
             r = random.choice(rooms)
             walls = [

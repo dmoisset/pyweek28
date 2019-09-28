@@ -106,6 +106,8 @@ class Hero(observer.Observable):
         return self.room.y
 
     def check_pick_up(self) -> Optional[treasure.Item]:
+        assert self.room.loot
+
         item = self.room.loot
         if item.kind.slot != treasure.ItemSlot.NONE:
             return self.worn.get(item.kind.slot, None)
