@@ -325,6 +325,7 @@ class Game(Observable):
         self.time += ESCAPE_TIME
         check = self.hero.agility.bonus + roll() + bonus
         if check < monster.escape_dc:
+            sounds.roar.play()
             monster.attack(self)
         self.hero.retreat()
 
