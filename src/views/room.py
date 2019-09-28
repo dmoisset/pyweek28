@@ -71,6 +71,7 @@ class RoomView:
 
         # Treasure: this is created/destroyed in the notify function
         self.treasure: Optional[Sprite] = None
+        self.treasure_kind: Optional[str] = None
 
         # Initial update
         self.notify(room, {})
@@ -113,13 +114,18 @@ class RoomView:
         self.monster.color = (1, 1, 1, int(room.seen and room.monster is not None))
         # Add treasure if present
         visible_treasure = room.seen and room.loot is not None
+        # Remove treasure if disappeared or changed
+        if self.treasure is not None and (
+            not visible_treasure or room.loot.kind.id != self.treasure_kind
+        ):
+            self.treasure.delete()
+            self.treasure = None
+            self.trasure_kind = None
+        # Add treasure if missing
         if visible_treasure and self.treasure is None:
             layer = self.floor.layer
             self.treasure = layer.add_sprite(room.loot.kind.id, pos=self.floor.pos)
             self.treasure.scale = 0.8
-        if self.treasure is not None and not visible_treasure:
-            self.treasure.delete()
-            self.treasure = None
 
     def release(self) -> None:
         room = self.room

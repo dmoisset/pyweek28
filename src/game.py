@@ -211,28 +211,12 @@ class Game(Observable):
     def monster_encounter(self) -> None:
         assert self.hero.room.monster
 
-        def fight() -> None:
-            self.time += FIGHT_TIME
-            check = self.hero.strength.bonus + roll()
-            if check >= monster.ac:
-                if random.random() <= monster.drop_rate:
-                    self.hero.room.loot = treasure.Item.random()
-                    self.visit_treasure("The monster dies and drops a {}")
-                else:
-                    self.add_message("You defeat the monster!")
-            else:
-                self.add_message("The monster hits you before being defeated!")
-                monster.attack(self)
-            self.hero.room.monster = None
-
-        monster = self.hero.room.monster
-
         entries = [
             MenuItem(
                 key="K_1",
                 label="[1] Chaaaaarge!",
                 subtitle="The monster dies, but may hurt you.",
-                action=fight,
+                action=self.fight,
             ),
             MenuItem(
                 key="K_2",
@@ -251,7 +235,24 @@ class Game(Observable):
             )
         )
 
-    def escape(self, bonus=0) -> None:
+    def fight(self, bonus: int = 0) -> None:
+        assert self.hero.room.monster
+        monster = self.hero.room.monster
+
+        self.time += FIGHT_TIME
+        check = self.hero.strength.bonus + roll() + bonus
+        if check >= monster.ac:
+            if random.random() <= monster.drop_rate:
+                self.hero.room.loot = treasure.Item.random()
+                self.visit_treasure("The monster dies and drops a {}")
+            else:
+                self.add_message("You defeat the monster!")
+        else:
+            self.add_message("The monster hits you before being defeated!")
+            monster.attack(self)
+        self.hero.room.monster = None
+
+    def escape(self, bonus: int = 0) -> None:
         assert self.hero.room.monster
         monster = self.hero.room.monster
         self.time += ESCAPE_TIME
@@ -300,9 +301,9 @@ class Game(Observable):
             )
         )
 
-    def break_door(self) -> None:
+    def break_door(self, bonus: int = 0) -> None:
         self.time += BREAK_TIME
-        check = self.hero.strength.bonus + roll()
+        check = self.hero.strength.bonus + roll() + bonus
         assert self.hero.room.door
         if check >= self.hero.room.door.break_dc:
             self.hero.room.door = None

@@ -43,6 +43,20 @@ KINDS = [
         frequency=1,
         slot=ItemSlot.BOOTS,
     ),
+    ItemKind(
+        "boots_smash",
+        name="Boots of Smashing",
+        description="Improves your chances of breaking a door by 25%",
+        frequency=1,
+        slot=ItemSlot.BOOTS,
+    ),
+    ItemKind(
+        "boots_kungfu",
+        name="Boots of Kung Fu",
+        description="Improves your chances of hitting a monster first by 25%",
+        frequency=1,
+        slot=ItemSlot.BOOTS,
+    ),
 ]
 
 KINDS_BY_ID = {k.id: k for k in KINDS}
@@ -103,13 +117,25 @@ def door_options(g: "game.Game", item: Item) -> Iterable[Option]:
             "This discards the key but ensures the door is opened. Triggers traps.",
             action=lambda: g.unlock_door(item),
         )
+    elif item.kind.id == "boots_smash":
+        yield Option(
+            "Kick it down with your Boots of Smashing",
+            "Breaks doors with an +25% chance. Triggers traps.",
+            action=lambda: g.break_door(+5),
+        )
 
 
 def monster_options(g: "game.Game", item: Item) -> Iterable[Option]:
     assert g.hero.room.monster is not None
     if item.kind.id == "boots_escape":
         yield Option(
-            "Run with your boots",
+            "Run with your Boots of Escape",
             "Increases escape chance by 25%",
             action=lambda: g.escape(+5),
+        )
+    elif item.kind.id == "boots_kungfu":
+        yield Option(
+            "Roundhouse kick it! (Boots of Kung Fu)",
+            "Increases hit chance by 25%",
+            action=lambda: g.fight(+5),
         )
