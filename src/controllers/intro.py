@@ -39,7 +39,7 @@ intro_pos_y = [200, 240, 240, 350]
 
 
 class IntroController:
-    def __init__(self, stage=0):
+    def __init__(self, stage: int = 0) -> None:
         self.stage = stage
 
     def activate(self, scene: HUDScene) -> None:
