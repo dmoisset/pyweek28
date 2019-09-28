@@ -22,7 +22,7 @@ in his tower nearby... but he died a
 century ago. Others have tried to get
 into the building just to escape with
 reports of deadly traps and monsters.""",
-    """But there is no choice now but face
+    """There is no choice now but to face
 the dangers within if you are to slay the
 evil dragon. The time is running out and
 the path will certainly be filled with
