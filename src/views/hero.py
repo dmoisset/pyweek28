@@ -7,7 +7,9 @@ import hero
 from hudscene import HUDScene
 import observer
 from views.layer_ids import HERO_LAYER
-from views.dimensions import ROOM_SPACING
+from views.dimensions import ROOM_SPACING, SCREEN_WIDTH, SCREEN_HEIGHT
+
+HURT_LAYER = 10
 
 
 class HeroView:
@@ -17,17 +19,25 @@ class HeroView:
         self.scene = scene
         self.sprite = scene.layers[HERO_LAYER].add_sprite("hero")
         self.sprite.scale = 0.18
+        self.hurt = scene.hudlayers[HURT_LAYER].add_particle_group(
+            texture="explode", max_age=0.5
+        )
+        self.hurt.add_color_stop(0, (1, 1, 0, 1))
+        self.hurt.add_color_stop(0.5, (1, 1, 0, 0))
+        self.prev_damage = hero.damage
         self.notify(hero, {})
         hero.register(self)
 
     def notify(self, obj: observer.Observable, message: observer.Message) -> None:
         pc = cast(hero.Hero, obj)
-        animate(self.sprite, pos=(pc.x * ROOM_SPACING, pc.y * ROOM_SPACING))
-        animate(
-            self.scene.camera,
-            duration=0.2,
-            pos=(pc.x * ROOM_SPACING, pc.y * ROOM_SPACING),
-        )
+        target = (pc.x * ROOM_SPACING, pc.y * ROOM_SPACING)
+        animate(self.sprite, pos=target)
+        animate(self.scene.camera, duration=0.2, pos=target)
+        if pc.damage > self.prev_damage:
+            self.hurt.emit(
+                50, pos=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), vel_spread=60, size=8
+            )
+        self.prev_damage = pc.damage
 
 
 HP_METER_WIDTH = 110
