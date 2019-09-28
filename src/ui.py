@@ -30,6 +30,7 @@ class EventManager:
             rootdir=os.environ["RUNNER_DIRECTORY"],
             width=SCREEN_WIDTH,
             height=SCREEN_HEIGHT,
+            title="Spire of Chaos",
         )
         self.stack = []
 
