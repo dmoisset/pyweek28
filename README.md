@@ -93,8 +93,8 @@ See LICENSE file
        https://creativecommons.org/licenses/by/3.0/deed.en
      - tower image is a 1832 Thomas Cole painting, under public domain:
        https://commons.wikimedia.org/wiki/File:Cole_Thomas_Romantic_Landscape_with_Ruined_Tower_1832-36.jpg
-     - barren landscape from https://www.deviantart.com/highdarktemplar/art/Desolation-63289461
-       Creative Commons Attribution-Noncommercial-No Derivative Works 3.0 License
+     - barren landscape from https://www.deviantart.com/theshock/art/Vulcano-Land-318210948
+       Creative Commons Attribution-ShareAlike 3.0 Unported License
 
 **Music credits:**
 
