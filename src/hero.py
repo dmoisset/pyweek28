@@ -110,6 +110,8 @@ class Hero(observer.Observable):
 
     def pick_up(self) -> None:
         """add `item` from current room to inventory. May drop another"""
+        assert self.room.loot
+
         item = self.room.loot
         self.inventory.append(item)
         self.room.loot = None
