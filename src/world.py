@@ -15,13 +15,9 @@ class Direction(Enum):
     EAST = (+1, 0)
     WEST = (-1, 0)
 
-
-class Terrain(Enum):
-    EMPTY = auto()
-    DOOR = auto()
-    TRAP = auto()
-    STAIRS_UP = auto()
-    STAIRS_DOWN = auto()
+    def opposite(self) -> "Direction":
+        x, y = self.value
+        return Direction((-x, -y))
 
 
 class DoorKind(Enum):
@@ -68,7 +64,6 @@ class Room(observer.Observable):
     x: int
     y: int
 
-    terrain: Terrain = Terrain.EMPTY
     neighbors: Dict[Direction, "Room"]
 
     # Doors
@@ -137,6 +132,12 @@ class Room(observer.Observable):
 
     def is_exit(self) -> bool:
         return self.level.exit is self
+
+
+def _inside(room: Room, d: Direction, width: int, height: int) -> bool:
+    rx, ry = room.x, room.y
+    dx, dy = d.value
+    return (0 <= rx + dx < width) and (0 <= ry + dy < height)
 
 
 class Level:
@@ -212,12 +213,117 @@ class Level:
         if "exit" not in vars(self):
             raise ValueError("Map has no exit!")
 
+    @classmethod
+    def random(cls, width: int = 24, height: int = 15) -> None:
+        OPENNESS = 0.1  # Ratio of rooms that get an extra wall removed
+        DOOR_DENSITY = 0.6  # Ratio of valid door locations that get a door
+        DOOR_SECRECY = 0.2  # Percentage of doors that are made secret
+        TRAP_DENSITY = 0.05  # Ratio of free locations made a standalone trap
+        MONSTER_DENSITY = 0.1  # Ratio of free locations made a monster
+        LOOT_DENSITY = 0.1  # Ratio of free locations made treasure
+
+        # 0. Create grid
+        self = object.__new__(cls)
+        grid = [[Room(self, x, y) for x in range(width)] for y in range(height)]
+        self.entrance = grid[0][0]
+        self.exit = grid[height - 1][width - 1]
+
+        # 1. Connect rooms until getting a spanning tree
+        connected = {(0, 0)}
+        frontier = [(0, 0)]
+        while len(connected) < width * height:
+            random.shuffle(frontier)
+            fx, fy = frontier[-1]
+            # compute neighbors
+            neighbors = []
+            if fx + 1 < width and (fx + 1, fy) not in connected:
+                neighbors.append((fx + 1, fy, Direction.EAST))
+            if fx - 1 >= 0 and (fx - 1, fy) not in connected:
+                neighbors.append((fx - 1, fy, Direction.WEST))
+            if fy + 1 < height and (fx, fy + 1) not in connected:
+                neighbors.append((fx, fy + 1, Direction.SOUTH))
+            if fy - 1 >= 0 and (fx, fy - 1) not in connected:
+                neighbors.append((fx, fy - 1, Direction.NORTH))
+            if neighbors:
+                nx, ny, d = random.choice(neighbors)
+                new_room = grid[ny][nx]
+                grid[fy][fx].neighbors[d] = new_room
+                new_room.neighbors[d.opposite()] = grid[fy][fx]
+                connected.add((nx, ny))
+                frontier.append((nx, ny))
+            else:
+                frontier.pop()
+
+        # 2. Break down more walls to open it up a bit
+        rooms = sum(grid, [])
+        for _ in range(int(width * height * OPENNESS)):
+            r = random.choice(rooms)
+            walls = [
+                d
+                for d in Direction
+                if d not in r.neighbors and _inside(r, d, width, height)
+            ]
+            if walls:
+                # tear down random wall w
+                w = random.choice(walls)
+                dx, dy = w.value
+                n = grid[r.y + dy][r.x + dx]
+                r.neighbors[w] = n
+                n.neighbors[w.opposite()] = r
+
+        # 3. Add doors
+        rooms.remove(self.exit)
+        rooms.remove(self.entrance)
+        random.shuffle(rooms)
+        valid_door_locations = [
+            r
+            for r in rooms
+            if len(r.neighbors) == 2
+            and tuple(r.neighbors.keys())[0] == tuple(r.neighbors.keys())[1].opposite()
+        ]
+        door_count = int(len(valid_door_locations) * DOOR_DENSITY)
+        for _ in range(door_count):
+            r = valid_door_locations.pop()
+            r.door = Door()
+            if random.random() <= DOOR_SECRECY:
+                r.door.hide_dc = 10
+            if random.random() <= DOOR_TRAP_PROBABILITY:
+                r.trap = Trap()
+            rooms.remove(r)
+
+        # 4. Add traps
+        trap_count = int(len(rooms) * TRAP_DENSITY)
+        for _ in range(trap_count):
+            r = rooms.pop()
+            r.trap = Trap()
+
+        # 5. Add monsters
+        monster_count = int(len(rooms) * MONSTER_DENSITY)
+        for _ in range(monster_count):
+            r = rooms.pop()
+            r.monster = Monster()
+
+        # 6. Add loot
+        loot_count = int(len(rooms) * LOOT_DENSITY)
+        for _ in range(loot_count):
+            r = rooms.pop()
+            r.loot = treasure.Item.random()
+
+        return self
+
 
 class World:
     levels: List[Level]
 
     def __init__(self) -> None:
-        self.levels = [Level("level0"), Level("level1")]
+        self.levels = [
+            Level.random(),
+            Level.random(),
+            Level.random(),
+            Level.random(),
+            Level.random(),
+            Level.random(),
+        ]
 
     def level_number(self, l: Level) -> int:
         return self.levels.index(l)
