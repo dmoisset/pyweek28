@@ -411,7 +411,11 @@ class Game(Observable):
 
         drop = self.hero.check_pick_up()
         if drop:
-            subtitle = f"You will have to drop your {drop.kind.name}"
+            if drop.kind is item.kind:
+                self.add_message(f"The {item.kind.name} here are exactly like yours.")
+                return
+            else:
+                subtitle = f"You will have to drop your {drop.kind.name}"
         else:
             subtitle = ""
 
