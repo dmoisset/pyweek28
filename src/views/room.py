@@ -116,7 +116,8 @@ class RoomView:
         visible_treasure = room.seen and room.loot is not None
         # Remove treasure if disappeared or changed
         if self.treasure is not None and (
-            not visible_treasure or room.loot.kind.id != self.treasure_kind
+            not visible_treasure
+            or room.loot.kind.id != self.treasure_kind  # type: ignore
         ):
             self.treasure.delete()
             self.treasure = None
@@ -124,7 +125,9 @@ class RoomView:
         # Add treasure if missing
         if visible_treasure and self.treasure is None:
             layer = self.floor.layer
-            self.treasure = layer.add_sprite(room.loot.kind.id, pos=self.floor.pos)
+            self.treasure = layer.add_sprite(
+                room.loot.kind.id, pos=self.floor.pos  # type: ignore
+            )
             self.treasure.scale = 0.8
 
     def release(self) -> None:

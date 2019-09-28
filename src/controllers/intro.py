@@ -37,12 +37,17 @@ intro_images = ["intro_bg", "intro_bg_2", "intro_bg_2", None]
 intro_pos_x = [900, 300, 300, 600]
 intro_pos_y = [200, 240, 240, 350]
 
+INTRO_LAYER = 100
+
 
 class IntroController:
-    def __init__(self, stage: int = 0) -> None:
+    def __init__(
+        self, stage: int = 0, track: str = "intro", intro: bool = True
+    ) -> None:
         self.stage = stage
+        self.is_intro = intro
         if stage == 0:
-            music.play_once("intro")
+            music.play_once(track)
 
     def activate(self, scene: HUDScene) -> None:
         size = 20
@@ -51,16 +56,18 @@ class IntroController:
         y = intro_pos_y[self.stage]
 
         if intro_images[self.stage]:
-            scene.layers[0].add_sprite(intro_images[self.stage], pos=scene.camera.pos)
-            scroll = scene.layers[0].add_sprite("scroll", pos=(x, 330))
+            scene.hudlayers[INTRO_LAYER].add_sprite(
+                intro_images[self.stage], pos=scene.hudcamera.pos
+            )
+            scroll = scene.hudlayers[INTRO_LAYER].add_sprite("scroll", pos=(x, 330))
             scroll.scale = 0.9
             color = "black"
         else:
             color = "white"
-        scene.layers[0].add_label(
+        scene.hudlayers[INTRO_LAYER].add_label(
             text, align="center", pos=(x, y), color=color, fontsize=size
         )
-        scene.layers[0].add_label(
+        scene.hudlayers[INTRO_LAYER].add_label(
             "(press SPACE to continue)",
             align="center",
             pos=(x, 500),
@@ -69,12 +76,14 @@ class IntroController:
         )
 
     def deactivate(self, scene: HUDScene) -> None:
-        scene.layers[0].clear()
+        scene.hudlayers[INTRO_LAYER].clear()
 
     def on_key_down(self, key: keys, mod: keymods) -> None:
         if key in (keys.ESCAPE, keys.SPACE):
             next_stage = self.stage + 1
-            if next_stage == len(intro_text):
+            if next_stage < len(intro_text):
+                UI.replace(self, IntroController(next_stage, intro=self.is_intro))
+            elif self.is_intro:
                 UI.replace(self, MapController())
             else:
-                UI.replace(self, IntroController(next_stage))
+                UI.pop()

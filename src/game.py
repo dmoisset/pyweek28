@@ -2,7 +2,7 @@ from enum import Enum
 import random
 from typing import Iterator, List, Optional
 
-from wasabi2d import sounds, music
+from wasabi2d import sounds
 
 import hero
 from observer import Observable, Message
@@ -254,12 +254,6 @@ class Game(Observable):
                 )
             )
         else:
-            self.add_message("You reach the top of the tower!")
-            self.add_message("You find the enchanted arrow...")
-            self.add_message("With that, you quickly dispatch the evil dragon")
-
-            music.pause()
-            sounds.win.play()
             self.win = True
 
     def go_to_level(self, new_level: Level, enter: bool) -> None:

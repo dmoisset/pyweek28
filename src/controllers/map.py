@@ -3,6 +3,7 @@ from typing import List
 from wasabi2d import keys, keymods
 from wasabi2d import music
 
+import controllers.intro
 from controllers.message import MessageController
 from controllers.menu import MenuController
 import game
@@ -100,12 +101,53 @@ class MapController:
                 UI.push(c)
         if "win" in msg:
             if self.game.win is not None:
-                UI.replace(
-                    self,
-                    MessageController(
-                        "You " + ("win!" if self.game.win else "lose!"), offset=-5
-                    ),
-                )
+                if self.game.win:
+                    self.win()
+                else:
+                    self.lose()
         if "current_level" in msg:
             self.clear_map()
             self.show_map()
+
+    def win(self) -> None:
+        controllers.intro.intro_text = [
+            """At the top of the tower, sitting on a
+pedestal there's a quiver full of the
+enchanted arrows, next to the skeleton
+of a dead wizard.
+
+You run back to the town right on time,
+and use one to pierce the dragon's
+heart. The beast squeals and tries to
+fly away before crumbling into the
+nearby lake.
+""",
+            """Your friends, your family are all
+safe now.
+
+You can rest now. And hopefully never
+return to that cursed tower.
+""",
+        ]
+        controllers.intro.intro_images = ["intro_bg_2", "intro_bg_2"]
+        controllers.intro.intro_pos_x = [300, 300]
+        controllers.intro.intro_pos_y = [230, 280]
+        UI.replace(
+            self, controllers.intro.IntroController(track="success", intro=False)
+        )
+
+    def lose(self) -> None:
+        controllers.intro.intro_text = [
+            """Nobody has returned from the spire
+and no one ever will. The dragon goes
+mad and burns everything. The town, the
+farms, the tower...
+
+If only you could have reach the top
+alive and before a week...""",
+            "Some other hero... Some other time...",
+        ]
+        controllers.intro.intro_images = ["defeat", "defeat"]
+        controllers.intro.intro_pos_x = [900, 900]
+        controllers.intro.intro_pos_y = [280, 350]
+        UI.replace(self, controllers.intro.IntroController(track="defeat", intro=False))
