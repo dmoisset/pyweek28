@@ -31,4 +31,4 @@ class GameInfoView:
         g = cast(game.Game, obj)
         level = g.world.level_number(g.hero.room.level) + 1
         nlevels = len(g.world.levels)
-        self.time_label.text = f"Level {level}/{nlevels}\n{convert_time(g.time)}"
+        self.time_label.text = f"Floor {level}/{nlevels}\n{convert_time(g.time)}"
