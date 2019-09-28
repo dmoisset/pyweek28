@@ -15,6 +15,10 @@ You will need to pip install some of these before running the game:
  - typing_extensions
  - dataclasses (only if you use python 3.6)
 
+I have tried this on Linux on Windows
+
+Unfortunately, it won't run on OS X; wasabi2d requires OpenGL 4.3 and Apple
+only supports OpenGL 4.1
 
 ## RUNNING THE GAME
 
