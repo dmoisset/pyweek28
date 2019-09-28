@@ -40,6 +40,6 @@ class MessageController:
     def deactivate(self, scene: HUDScene) -> None:
         scene.hudlayers[self.layer].clear()
 
-    def on_key_up(self, key: keys, mod: keymods) -> None:
+    def on_key_down(self, key: keys, mod: keymods) -> None:
         if key in (keys.ESCAPE, keys.SPACE):
             UI.pop()

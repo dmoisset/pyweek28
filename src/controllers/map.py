@@ -57,7 +57,7 @@ class MapController:
         GameInfoView(self.scene, self.game)
         HitPointView(self.scene, self.game.hero)
 
-    def on_key_up(self, key: keys, mod: keymods) -> None:
+    def on_key_down(self, key: keys, mod: keymods) -> None:
         if key == keys.RIGHT:
             self.game.move(world.Direction.EAST)
         elif key == keys.UP:

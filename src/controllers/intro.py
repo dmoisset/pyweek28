@@ -69,7 +69,7 @@ class IntroController:
     def deactivate(self, scene: HUDScene) -> None:
         scene.layers[0].clear()
 
-    def on_key_up(self, key: keys, mod: keymods) -> None:
+    def on_key_down(self, key: keys, mod: keymods) -> None:
         if key in (keys.ESCAPE, keys.SPACE):
             next_stage = self.stage + 1
             if next_stage == len(intro_text):
