@@ -12,7 +12,7 @@ from ui import UI, Controller
 import world
 from views.room import RoomView
 from views.game_info import GameInfoView
-from views.hero import HeroView, HitPointView
+from views.hero import HeroView, HitPointView, StatsView
 
 
 class MapController:
@@ -67,6 +67,7 @@ class MapController:
     def show_hud(self) -> None:
         GameInfoView(self.scene, self.game)
         HitPointView(self.scene, self.game.hero)
+        StatsView(self.scene, self.game.hero)
 
     def on_key_down(self, key: keys, mod: keymods) -> None:
         if key == keys.RIGHT:

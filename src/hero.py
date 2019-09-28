@@ -24,7 +24,16 @@ class Stat:
 
 class Hero(observer.Observable):
 
-    OBSERVABLE_FIELDS = {"room", "max_hit_points", "damage", "level"}
+    OBSERVABLE_FIELDS = {
+        "room",
+        "max_hit_points",
+        "damage",
+        "level",
+        "strength",
+        "agility",
+        "health",
+        "awareness",
+    }
     OBSERVABLE_PROPERTIES = {
         "room": ("x", "y"),
         "max_hit_points": ("hit_points",),
@@ -50,11 +59,11 @@ class Hero(observer.Observable):
 
     def __init__(self, world: World) -> None:
         super().__init__()
-        self.strength = Stat()
+        self.strength = Stat(score=6)
         self.agility = Stat(score=2)
         self.health = Stat()
         self.awareness = Stat()
-        self.power = Stat(score=6)
+        self.power = Stat()
 
         self.room = world.levels[0].entrance
         self.resistances = set()

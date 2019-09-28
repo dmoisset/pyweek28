@@ -36,6 +36,9 @@ HP_METER_POS = (100, 115)
 
 HP_METER_LAYER = 0
 
+STAT_LAYER = 0
+STAT_POS = (20, 315)
+
 
 class HitPointView:
     def __init__(self, scene: HUDScene, hero: hero.Hero) -> None:
@@ -77,3 +80,24 @@ class HitPointView:
             pos=(HP_METER_POS[0] - (HP_METER_WIDTH - width) / 2, HP_METER_POS[1]),
             color=color,
         )
+
+
+class StatsView:
+    def __init__(self, scene: HUDScene, hero: hero.Hero) -> None:
+        layer = scene.hudlayers[HP_METER_LAYER]
+
+        self.label = layer.add_label("", pos=STAT_POS, fontsize=16, color="#cccccc")
+
+        hero.register(self)
+        self.notify(hero, {})
+
+    def notify(self, obj: observer.Observable, message: observer.Message) -> None:
+        pc: hero.Hero = cast(hero.Hero, obj)
+        t = [
+            f"Character Level: {pc.level}",
+            f"Strength: +{pc.strength.bonus}",
+            f"Agility: +{pc.agility.bonus}",
+            f"Health: +{pc.health.bonus}",
+            f"Awareness: +{pc.awareness.bonus}",
+        ]
+        self.label.text = "\n".join(t)

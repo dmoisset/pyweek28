@@ -157,6 +157,61 @@ class Game(Observable):
         elif room.loot:
             self.visit_treasure()
 
+    def hero_level_up(self, level: int) -> None:
+        increases_left = 2
+
+        def powerup(ability: str) -> None:
+            nonlocal increases_left
+            s = getattr(self.hero, ability)
+            s.score += 2
+            setattr(self.hero, ability, s)
+            increases_left -= 1
+            if increases_left:
+                self.add_menu(
+                    Menu(
+                        title=f"You have gained {diff} level{'' if diff == 1 else 's'}!",
+                        subtitle=f"You can increase {increases_left} of your abilities",
+                        entries=entries,
+                    )
+                )
+
+        if level > self.hero.level:
+            diff = level - self.hero.level
+            self.hero.level = level
+            entries = [
+                MenuItem(
+                    key="K_1",
+                    label="[1] Increase strength",
+                    subtitle="Improve 5% your effectiveness at combat and breaking doors",
+                    action=lambda: powerup("strength"),
+                ),
+                MenuItem(
+                    key="K_2",
+                    label="[2] Increase agility",
+                    subtitle="Improve 5% your chance of escaping and disarming traps",
+                    action=lambda: powerup("agility"),
+                ),
+                MenuItem(
+                    key="K_3",
+                    label="[3] Increase health",
+                    subtitle="Gives you an extra hit point per level",
+                    action=lambda: powerup("health"),
+                ),
+                MenuItem(
+                    key="K_4",
+                    label="[4] Increase awareness",
+                    subtitle="Improve 5% your chance of detecting traps and secret doors",
+                    action=lambda: powerup("awareness"),
+                ),
+            ]
+            self.add_menu(
+                Menu(
+                    title=f"You have gained {diff} level{'' if diff == 1 else 's'}!",
+                    subtitle=f"You can increase {increases_left} of your abilities",
+                    entries=entries,
+                )
+            )
+
     # Stairs
 
     def visit_entrance(self) -> None:
@@ -172,7 +227,7 @@ class Game(Observable):
             ]
             self.add_menu(
                 Menu(
-                    title=f"The stairs go down to level {self.world.level_number(below)+1}",
+                    title=f"The stairs go down to floor {self.world.level_number(below)+1}",
                     subtitle="Go down?",
                     entries=entries,
                 )
@@ -191,7 +246,7 @@ class Game(Observable):
             ]
             self.add_menu(
                 Menu(
-                    title=f"The stairs go up to level {self.world.level_number(above)+1}",
+                    title=f"The stairs go up to floor {self.world.level_number(above)+1}",
                     subtitle="Go up?",
                     entries=entries,
                 )
@@ -204,6 +259,7 @@ class Game(Observable):
         self.time += MOVE_TIME
         self.current_level = new_level
         self.hero.room = new_level.entrance if enter else new_level.exit
+        self.hero_level_up(self.world.level_number(new_level) + 1)
         self.look()
 
     # Monsters
