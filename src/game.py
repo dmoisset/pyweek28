@@ -1,4 +1,5 @@
 from enum import Enum
+import random
 from typing import List, Optional
 
 import hero
@@ -178,7 +179,11 @@ class Game(Observable):
             self.time += FIGHT_TIME
             check = self.hero.strength.bonus + roll()
             if check >= monster.ac:
-                self.add_message("You defeat the monster!")
+                if random.random() <= monster.drop_rate:
+                    self.hero.room.loot = treasure.Item.random()
+                    self.visit_treasure("The monster dies and drops a {}")
+                else:
+                    self.add_message("You defeat the monster!")
             else:
                 self.add_message("The monster hits you before being defeated!")
                 monster.attack(self)
@@ -340,7 +345,7 @@ class Game(Observable):
                 )
             )
 
-    def visit_treasure(self):
+    def visit_treasure(self, title: str = "There is a {} here") -> None:
         assert self.hero.room.loot
 
         item = self.hero.room.loot
@@ -362,7 +367,7 @@ class Game(Observable):
         ]
         self.add_menu(
             Menu(
-                title=f"There is a {item.kind.name} here",
+                title=title.format(item.kind.name),
                 subtitle=item.kind.description,
                 entries=entries,
             )

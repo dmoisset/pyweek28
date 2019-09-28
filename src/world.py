@@ -51,6 +51,8 @@ class Monster:
     escape_dc: int = 10
     damage: int = 2
 
+    drop_rate: float = 0.5  # How often do monsters give loot
+
     def attack(self, g: "game.Game") -> None:
         """Called when the monster successfully lands an attack. Bad stuff happens"""
         g.hero.take_damage(self.damage, game.DamageType.PHYSICAL)
@@ -214,7 +216,7 @@ class Level:
             raise ValueError("Map has no exit!")
 
     @classmethod
-    def random(cls, width: int = 24, height: int = 15) -> None:
+    def random(cls, width: int = 24, height: int = 15) -> "Level":
         OPENNESS = 0.1  # Ratio of rooms that get an extra wall removed
         DOOR_DENSITY = 0.6  # Ratio of valid door locations that get a door
         DOOR_SECRECY = 0.2  # Percentage of doors that are made secret
