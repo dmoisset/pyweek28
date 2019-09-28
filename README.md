@@ -8,9 +8,10 @@ Members: Darni
 
 The game was built on python 3.7, should work on python 3.6
 
-You might need to pip install some of these before running the game:
+You will need to pip install some of these before running the game:
 
- - wasabi2d
+ - wasabi2d: The latest release as of today has some bugs fixed in master.
+   please install it with `git+https://github.com/lordmauve/wasabi2d.git@669e0072`
  - typing_extensions
  - dataclasses (only if you use python 3.6)
 
