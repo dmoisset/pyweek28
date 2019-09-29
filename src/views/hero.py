@@ -1,4 +1,3 @@
-import math
 from typing import cast, Optional
 
 from wasabi2d import animate
@@ -37,11 +36,7 @@ class HeroView:
         animate(self.scene.camera, duration=0.2, pos=target)
         if pc.damage > self.prev_damage:
             self.hurt.emit(
-                1,
-                pos=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2),
-                vel_spread=5,
-                size=30,
-                angle=math.pi,
+                1, pos=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), vel_spread=5, size=30
             )
         self.prev_damage = pc.damage
 
